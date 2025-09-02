@@ -1,0 +1,110 @@
+﻿@model IEnumerable<ProyectoDSWToolify.Models.ViewModels.ListarProductosPorCategoriaDTO>
+@{
+    ViewData["Title"] = "Reporte de Productos";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+
+    var selectedOrden = Context.Request.Query["orden"].ToString();
+    var selectedCategoria = Context.Request.Query["idCategoria"].ToString();
+    var paginaActual = (int)(ViewBag.pagActual ?? 1);
+    var totalPaginas = (int)(ViewBag.numeroPag ?? 1);
+}
+
+<h1 class="mb-4">Reporte de Productos</h1>
+<form asp-action="ReporteProducto" method="get" class="mb-4">
+    <div class="row g-3 align-items-end">
+        <div class="col-md-3">
+            <label class="form-label">Categoría</label>
+            <select name="idCategoria" class="form-control" asp-items="@ViewBag.Categorias">
+                <option value="0">-- Seleccione --</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Orden por Stock</label>
+            <select name="orden" class="form-control">
+                <option value="">--SELECCIONE--</option>
+                <option value="ASC" selected="@(selectedOrden == "ASC")">Ascendente</option>
+                <option value="DESC" selected="@(selectedOrden == "DESC")">Descendente</option>
+            </select>
+
+        </div>
+        <div class="col-md-6 d-flex flex-column flex-md-row gap-2">
+            <button type="submit" class="btn btn-primary">
+                Buscar <i class="fa-solid fa-magnifying-glass ms-1"></i>
+            </button>
+            <a asp-action="ReporteProducto"
+               asp-route-idCategoria="@selectedCategoria"
+               asp-route-orden="@selectedOrden"
+               asp-route-export="excel"
+               class="btn btn-success">
+                <i class="fa-solid fa-file-excel me-1"></i> Descargar Excel
+            </a>
+            <a asp-action="ReporteProducto"
+               asp-route-idCategoria="@selectedCategoria"
+               asp-route-orden="@selectedOrden"
+               asp-route-export="pdf"
+               class="btn btn-danger">
+                <i class="fa-solid fa-file-pdf me-1"></i> Descargar PDF
+            </a>
+        </div>
+    </div>
+</form>
+
+<style>
+    .textoRojo {
+        color: red;
+        font-weight: bold;
+    }
+
+    .textoVerde {
+        color: limegreen;
+        font-weight: bold;
+    }
+</style>
+
+<table class="table table-bordered table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>@Html.DisplayNameFor(m => m.First().idProducto)</th>
+            <th>@Html.DisplayNameFor(m => m.First().nombre)</th>
+            <th>@Html.DisplayNameFor(m => m.First().descripcion)</th>
+            <th>@Html.DisplayNameFor(m => m.First().proveedor)</th>
+            <th>@Html.DisplayNameFor(m => m.First().categoria)</th>
+            <th>@Html.DisplayNameFor(m => m.First().precio)</th>
+            <th>@Html.DisplayNameFor(m => m.First().stock)</th>
+            <th>@Html.DisplayNameFor(m => m.First().fechaRegistro)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.idProducto</td>
+                <td>@item.nombre</td>
+                <td>@item.descripcion</td>
+                <td>@item.proveedor</td>
+                <td>@item.categoria</td>
+                <td>@item.precio.ToString("C")</td>
+                <td class="@(item.stock > 20 ? "textoVerde" : "textoRojo")">@item.stock</td>
+                <td>@item.fechaRegistro.ToString("yyyy-MM-dd")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (totalPaginas > 1)
+{
+    <div class="text-center mt-3">
+        @for (int i = 1; i <= totalPaginas; i++)
+        {
+            bool isActual = i == paginaActual;
+            <a asp-action="ReporteProducto"
+               asp-route-idCategoria="@selectedCategoria"
+               asp-route-orden="@selectedOrden"
+               asp-route-pag="@i"
+               class="btn @(isActual ? "btn-danger" : "btn-outline-secondary") me-1"
+               style="@(isActual ? "pointer-events: none;" : "")">
+                @i
+            </a>
+        }
+    </div>
+}
