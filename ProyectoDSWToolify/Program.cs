@@ -58,6 +58,22 @@ builder.Services.AddHttpClient<IAdminService, AdminService>(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["Services:URL_API"]);
 });
+builder.Services.AddHttpClient<IDistritoService, DistritoService>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["Services:URL_API"]);
+});
+builder.Services.AddHttpClient<IProveedorService, ProveedorService>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["Services:URL_API"]);
+});
+builder.Services.AddHttpClient<IProductoService, ProductoService>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["Services:URL_API"]);
+});
+builder.Services.AddHttpClient<IGraficoService, GraficoService>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["Services:URL_API"]);
+});
 var app = builder.Build();
 
 // 👇 Middlewares de ejecución

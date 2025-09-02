@@ -7,7 +7,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 using ProyectoDSWToolify.Models;
 using ProyectoDSWToolify.Models.ViewModels;
+using ProyectoDSWToolify.Models.ViewModels.AdminVM;
 using ProyectoDSWToolify.Services.Contratos;
+using ProyectoDSWToolify.Services.Implementacion;
 
 namespace ProyectoDSWToolify.Controllers
 {
@@ -16,33 +18,60 @@ namespace ProyectoDSWToolify.Controllers
     {
         private readonly IAdminService adminService;
         private readonly ICategoriaService categoriaService;
+        private readonly IGraficoService graficoService;
+        private readonly IProveedorService proveedorService;
+        private readonly IProductoService productoService;
 
-        public AdminController(IAdminService adminService, ICategoriaService categoriaService)
+        public AdminController(IAdminService adminService, ICategoriaService categoriaService, IGraficoService graficoService, IProveedorService proveedorService, IProductoService productoService)
         {
             this.adminService = adminService;
             this.categoriaService = categoriaService;
+            this.graficoService = graficoService;
+            this.proveedorService = proveedorService;
+            this.productoService = productoService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Dashboard()
         {
             DateTime fechaActual = DateTime.Now;
             var nombre = User.FindFirst(ClaimTypes.Name)?.Value;
             var apellido = User.FindFirst("Apellido")?.Value;
-            var rol = User.FindFirst(ClaimTypes.Role)?.Value;
             var diaSemanaNombre = fechaActual.ToString("dddd", new System.Globalization.CultureInfo("es-ES"));
 
+            List<string> mensajes = new List<string>()
+        {
+            $"Bienvenido {nombre} ¿Qué deseas hacer este {diaSemanaNombre}?",
+            $"Hola {nombre} {apellido}, ¿Cómo te encuentras este {diaSemanaNombre}?",
+            $"Sr. {apellido}, bienvenido a Toolify.",
+            $"Feliz ¡{diaSemanaNombre}! {nombre}"
+        };
+            string mensajeAleatorio = obtenerMensajeAleatorio(mensajes);
 
-            List<String> mensaje = new List<string>()
-                {
-                    $"Bienvenido {nombre} ¿Que deseas hacer {diaSemanaNombre}?",
-                    $"Hola {nombre} {apellido} ¿Como te encuentras este {diaSemanaNombre}?",
-                    $"Sr. {apellido}, bienvenido a Toolify.",
-                    $"Feliz ¡{diaSemanaNombre}! {nombre} "
-                };
-            string mensajeAleatorio = obtenerMensajeAleatorio(mensaje);
+            var categorias = await graficoService.CategoriaProducto();
+            var proveedores = await graficoService.ProveedorProducto();
+            var ventasDistrito = await graficoService.VentaPorDistrito();
+            var ventasMes = await graficoService.VentaPorMes();
+            var ventasTipo = await graficoService.VentaPorMesAndTipoVenta();
+            var cantidadCategorias = await categoriaService.ListaCategoria();
+            var cantidadVentas = await adminService.ListadoVentaFechaAndTipoVenta(null, null, null);
+            var cantidadProductos = await productoService.ListaCompleta();
+            var cantidadProveedor = await proveedorService.obtenerListadoProveedor();
 
-            TempData["Mensaje"] = mensajeAleatorio;
-            return View();
+            var model = new DashboardViewModel
+            {
+                MensajeBienvenida = mensajeAleatorio,
+                CategoriaXProducto = categorias,
+                ProveedorXProducto = proveedores,
+                VentaXDistrito = ventasDistrito,
+                VentaXMes = ventasMes,
+                VentaXTipoVenta = ventasTipo,
+                TotalCategorias = cantidadCategorias.Count(),
+                TotalProductos = cantidadProductos.Count(),
+                TotalProveedores = cantidadProveedor.Count(),
+                TotalVentas = cantidadVentas.Count()
+            };
+
+            return View(model);
         }
 
         public string obtenerMensajeAleatorio(List<string> mensaje)
@@ -57,11 +86,13 @@ namespace ProyectoDSWToolify.Controllers
 
             return mensaje[indice];
         }
-
-        [HttpGet]
+        public async Task<IActionResult> Categoria()
+        {
+            var listado = await categoriaService.ListaCategoria();
+            return View(listado);
+        }
         public async Task<IActionResult> ReporteVenta(DateTime? fechaInicio, DateTime? fechaFin, string? tipo, int pag = 1)
         {
-            // Obtener listado de ventas filtradas desde el servicio (que llama la API)
             var listado = await adminService.ListadoVentaFechaAndTipoVenta(fechaInicio, fechaFin, tipo);
 
             if (!listado.Any())
@@ -69,7 +100,6 @@ namespace ProyectoDSWToolify.Controllers
                 listado = await adminService.ListadoVentaFechaAndTipoVenta(null, null, null);
             }
 
-            // Exportar a Excel (descarga directamente el archivo)
             if (Request.Query.ContainsKey("export") && Request.Query["export"] == "excel")
             {
                 var fileContent = await adminService.DescargarVentasExcel(fechaInicio, fechaFin, tipo);
@@ -77,14 +107,12 @@ namespace ProyectoDSWToolify.Controllers
                     $"ReporteVentas_{DateTime.Now:yyyyMMdd}.xlsx");
             }
 
-            // Exportar a PDF (descarga directamente el archivo)
             if (Request.Query.ContainsKey("export") && Request.Query["export"] == "pdf")
             {
                 var fileContent = await adminService.DescargarVentasPdf(fechaInicio, fechaFin, tipo);
                 return File(fileContent, "application/pdf", $"ReporteVentas_{DateTime.Now:yyyyMMdd}.pdf");
             }
 
-            // Paginación local para la vista
             int paginasMax = 10;
             int paginasTotales = listado.Count;
             int numeroPag = (int)Math.Ceiling((double)paginasTotales / paginasMax);
@@ -94,7 +122,6 @@ namespace ProyectoDSWToolify.Controllers
 
             return View(listado.Skip(skip).Take(paginasMax));
         }
-
 
         public async Task<IActionResult> ReporteProducto(int? idCategoria, string? orden, int pag = 1)
         {
@@ -133,7 +160,6 @@ namespace ProyectoDSWToolify.Controllers
 
             return View(productos.Skip(skip).Take(paginasMax));
         }
-
 
     }
 }

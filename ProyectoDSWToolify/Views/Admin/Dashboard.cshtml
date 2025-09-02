@@ -1,0 +1,180 @@
+﻿@model ProyectoDSWToolify.Models.ViewModels.AdminVM.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container-fluid py-4">
+    <h2 class="mb-1">Panel de Control de Administración</h2>
+    <p class="text-muted mb-4">
+        Bienvenido, @Model.MensajeBienvenida. Aquí encontrarás un resumen de las métricas más importantes del negocio.
+    </p>
+
+    <h4 class="mb-3">Acciones Rápidas</h4>
+    <p class="text-muted">Navega y realiza tareas comunes en un solo clic.</p>
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <a asp-controller="Producto" asp-action="Create" class="text-decoration-none">
+                <div class="card shadow-sm border-0 h-100 bg-primary-subtle text-primary hover-shadow">
+                    <div class="card-body d-flex align-items-center gap-3">
+                        <i class="bi bi-plus-circle display-5"></i>
+                        <div>
+                            <h6 class="mb-1 fw-bold text-uppercase">Crear Producto</h6>
+                            <p class="mb-0 small text-primary">Agregar un nuevo producto al inventario</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a asp-controller="Admin" asp-action="Categoria" class="text-decoration-none">
+                <div class="card shadow-sm border-0 h-100 bg-secondary-subtle text-secondary hover-shadow">
+                    <div class="card-body d-flex align-items-center gap-3">
+                        <i class="bi bi-folder2-open display-5"></i>
+                        <div>
+                            <h6 class="mb-1 fw-bold text-uppercase">Ver Categorías</h6>
+                            <p class="mb-0 small text-secondary">Gestionar las categorías de productos</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a asp-controller="Admin" asp-action="ReporteVenta" class="text-decoration-none">
+                <div class="card shadow-sm border-0 h-100 bg-success-subtle text-success hover-shadow">
+                    <div class="card-body d-flex align-items-center gap-3">
+                        <i class="bi bi-bar-chart-line display-5"></i>
+                        <div>
+                            <h6 class="mb-1 fw-bold text-uppercase">Reporte de Ventas</h6>
+                            <p class="mb-0 small text-success">Ver el análisis de ventas recientes</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <h4 class="mb-3">Análisis de Ventas</h4>
+    <p class="text-muted">Desglose de las ventas por ubicación y periodo de tiempo.</p>
+    <div class="row g-4 mb-5">
+        <div class="col-12">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <h5 class="card-title text-center">Ventas por Mes y Tipo de Venta</h5>
+                    <p class="card-subtitle mb-2 text-muted text-center">Comparativa de ventas al contado y a crédito a lo largo del año.</p>
+                    <canvas id="mesTipoVentaChart" width="400" height="140" ></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h4 class="mb-3">Métricas Clave del Negocio</h4>
+    <p class="text-muted">Una visión rápida y general de la situación actual.</p>
+    <div class="row g-4 mb-5">
+        <div class="col-xl-3 col-md-6">
+            <div class="card shadow-sm border-0 h-100 bg-primary-subtle text-primary">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <h6 class="text-uppercase fw-bold mb-0">Total Productos</h6>
+                        <h3 class="fw-bolder mt-2">@Model.TotalProductos</h3>
+                    </div>
+                    <i class="bi bi-box-seam h2 text-primary"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card shadow-sm border-0 h-100 bg-info-subtle text-info">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <h6 class="text-uppercase fw-bold mb-0">Total Categorías</h6>
+                        <h3 class="fw-bolder mt-2">@Model.TotalCategorias</h3>
+                    </div>
+                    <i class="bi bi-tags h2 text-info"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card shadow-sm border-0 h-100 bg-warning-subtle text-warning">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <h6 class="text-uppercase fw-bold mb-0">Total Proveedores</h6>
+                        <h3 class="fw-bolder mt-2">@Model.TotalProveedores</h3>
+                    </div>
+                    <i class="bi bi-truck h2 text-warning"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card shadow-sm border-0 h-100 bg-success-subtle text-success">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div>
+                        <h6 class="text-uppercase fw-bold mb-0">Total Ventas</h6>
+                        <h3 class="fw-bolder mt-2">@Model.TotalVentas</h3>
+                    </div>
+                    <i class="bi bi-currency-dollar h2 text-success"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h4 class="mb-3">Análisis de Inventario y Tipos de Venta</h4>
+    <p class="text-muted">Visualización de la distribución de productos y comparativa de ventas.</p>
+
+    <div class="row g-4 chart-grid">
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <h5 class="card-title text-center">Productos por Categoría</h5>
+                    <p class="card-subtitle mb-2 text-muted text-center">Distribución de productos según su categoría.</p>
+                    <canvas id="categoriaChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <h5 class="card-title text-center">Ventas por Distrito</h5>
+                    <p class="card-subtitle mb-2 text-muted text-center">Total de ventas realizadas en los diferentes distritos.</p>
+                    <canvas id="distritoChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <h5 class="card-title text-center">Productos por Proveedor</h5>
+                    <p class="card-subtitle mb-2 text-muted text-center">Cantidad de productos por cada proveedor.</p>
+                    <canvas id="proveedorChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <h5 class="card-title text-center">Ventas por Mes</h5>
+                    <p class="card-subtitle mb-2 text-muted text-center">Ingresos de ventas acumulados a lo largo de los meses.</p>
+                    <canvas id="mesChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        window.dashboardData = {
+            categoriaLabels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.CategoriaXProducto.Select(c => c.descripcion))),
+            categoriaData: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.CategoriaXProducto.Select(c => c.totalProductos))),
+            proveedorLabels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ProveedorXProducto.Select(p => p.razonSocial))),
+            proveedorData: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ProveedorXProducto.Select(p => p.totalProductos))),
+            distritoLabels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.VentaXDistrito.Select(v => v.distrito))),
+            distritoData: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.VentaXDistrito.Select(v => v.ventasTotales))),
+            mesLabels: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.VentaXMes.Select(v => v.mes))),
+            mesData: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.VentaXMes.Select(v => v.ventasTotales))),
+            ventaTipoDataRaw: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.VentaXTipoVenta))
+        };
+    </script>
+    <script src="~/js/dashboard.js" asp-append-version="true"></script>
+}

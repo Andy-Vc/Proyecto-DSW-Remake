@@ -1,7 +1,7 @@
 ﻿using ProyectoDSWToolify.Models;
-using ProyectoDSWToolify.Models.ViewModels;
 using ProyectoDSWToolify.Services.Contratos;
 using Newtonsoft.Json;
+using ProyectoDSWToolify.Models.ViewModels.AdminVM;
 
 namespace ProyectoDSWToolify.Services.Implementacion
 {

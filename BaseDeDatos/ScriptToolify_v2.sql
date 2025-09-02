@@ -518,7 +518,7 @@ begin
 		begin
 			SELECT 
 				ct.DESCRIPCION,
-			sum(p.STOCK) as totalProdutos
+			count(p.STOCK) as totalProdutos
 			FROM TB_PRODUCTO p
 			inner join TB_CATEGORIA ct on p.ID_CATEGORIA = ct.ID_CATEGORIA
 			group by  ct.DESCRIPCION
@@ -529,7 +529,7 @@ begin
 		begin
 			SELECT 
 				pv.RAZON_SOCIAL,
-			sum(p.STOCK) as totalProdutos
+			count(p.STOCK) as totalProdutos
 			FROM TB_PRODUCTO p
 			inner join TB_PROVEEDOR pv on p.ID_PROVEEDOR = pv.ID_PROVEEDOR
 			group by  pv.RAZON_SOCIAL

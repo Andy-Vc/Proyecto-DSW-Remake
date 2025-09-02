@@ -3,6 +3,7 @@ using System.Text;
 using ProyectoDSWToolify.Services.Contratos;
 using ProyectoDSWToolify.Models;
 using ProyectoDSWToolify.Models.ViewModels;
+using ProyectoDSWToolify.Models.ViewModels.ClienteVM;
 
 namespace ProyectoDSWToolify.Services.Implementacion
 {

@@ -51,7 +51,6 @@ namespace ApiToolify.Data.Repositorios
             }
         }
 
-
         public List<ProveedorProductoDTO> ProveedorProducto(string consulta)
         {
             List<ProveedorProductoDTO> lst = new List<ProveedorProductoDTO>();

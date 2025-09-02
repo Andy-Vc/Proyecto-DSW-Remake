@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using ProyectoDSWToolify.Models;
-using ProyectoDSWToolify.Models.ViewModels;
+using ProyectoDSWToolify.Models.ViewModels.ClienteVM;
+using ProyectoDSWToolify.Models.ViewModels.VendedorVM;
 using ProyectoDSWToolify.Services.Contratos;
 
 using ProyectoDSWToolify.Services.Implementacion;

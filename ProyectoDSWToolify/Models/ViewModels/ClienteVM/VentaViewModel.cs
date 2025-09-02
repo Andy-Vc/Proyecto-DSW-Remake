@@ -1,8 +1,7 @@
-﻿namespace ProyectoDSWToolify.Models.ViewModels
+﻿namespace ProyectoDSWToolify.Models.ViewModels.ClienteVM
 {
     public class VentaViewModel
     {
-
         public int idVenta { get; set; }
         public int idUsuario { get; set; }
         public DateTime fecha { get; set; }

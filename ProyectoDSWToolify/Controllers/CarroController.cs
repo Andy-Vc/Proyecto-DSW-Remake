@@ -2,6 +2,8 @@
 using ProyectoDSWToolify.Extensions;
 using ProyectoDSWToolify.Models;
 using ProyectoDSWToolify.Models.ViewModels;
+using ProyectoDSWToolify.Models.ViewModels.ClienteVM;
+using ProyectoDSWToolify.Models.ViewModels.VendedorVM;
 using ProyectoDSWToolify.Services.Contratos;
 
 namespace ProyectoDSWToolify.Controllers

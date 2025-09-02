@@ -1,4 +1,4 @@
-﻿using ProyectoDSWToolify.Models.ViewModels;
+﻿using ProyectoDSWToolify.Models.ViewModels.AdminVM;
 
 namespace ProyectoDSWToolify.Services.Contratos
 {
@@ -12,6 +12,5 @@ namespace ProyectoDSWToolify.Services.Contratos
         Task<byte[]> DescargarVentasPdf(DateTime? fechaInicio, DateTime? fechaFin, string? tipo);
         Task<byte[]> DescargarProductosExcel(int? idCategoria, string? orden);
         Task<byte[]> DescargarProductosPdf(int? idCategoria, string? orden);
-
     }
 }

@@ -50,16 +50,6 @@
                 <span asp-validation-for="file" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="fechaRegistro" class="control-label"></label>
-                <input asp-for="fechaRegistro" class="form-control" type="date"/>
-                <span asp-validation-for="fechaRegistro" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="estado" /> @Html.DisplayNameFor(model => model.estado)
-                </label>
-            </div>
-            <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>

@@ -1,0 +1,37 @@
+﻿@model IEnumerable<ProyectoDSWToolify.Models.Categoria>
+
+@{
+    ViewData["Title"] = "Categoria";
+}
+
+<h1>Categoria</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.idCategoria)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.descripcion)
+            </th>
+
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.idCategoria)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.descripcion)
+            </td>
+
+        </tr>
+}
+    </tbody>
+</table>

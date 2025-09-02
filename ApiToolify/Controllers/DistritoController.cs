@@ -19,12 +19,10 @@ namespace ApiToolify.Controllers
 
 
         [HttpGet]
-        public IActionResult Index()
+        public IActionResult Listado()
         {
             return Ok(distritoData.ListaCompleta());
         }
-
-    
 
     }
 }

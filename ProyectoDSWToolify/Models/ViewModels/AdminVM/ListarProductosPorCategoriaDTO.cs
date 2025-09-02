@@ -1,4 +1,4 @@
-﻿namespace ProyectoDSWToolify.Models.ViewModels
+﻿namespace ProyectoDSWToolify.Models.ViewModels.AdminVM
 {
     public class ListarProductosPorCategoriaDTO
     {

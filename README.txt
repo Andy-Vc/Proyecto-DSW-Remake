@@ -1,0 +1,1 @@
+Este proyecto está basado en un trabajo grupal realizado durante el curso Desarrollo Servicios Web. Esta versión ha sido refactorizada y mejorada por mí para incluir mejores prácticas, nuevas funcionalidades y mejoras de estructura de código.

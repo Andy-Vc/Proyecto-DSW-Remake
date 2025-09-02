@@ -1,5 +1,6 @@
 ﻿using ProyectoDSWToolify.Models;
 using ProyectoDSWToolify.Models.ViewModels;
+using ProyectoDSWToolify.Models.ViewModels.ClienteVM;
 
 namespace ProyectoDSWToolify.Services.Contratos
 {

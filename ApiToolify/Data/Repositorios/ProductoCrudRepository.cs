@@ -165,9 +165,7 @@ namespace ProyectoDSWToolify.Data.Repositorios
                     cm.Parameters.AddWithValue("@idCategoria", producto.categoria.idCategoria);
                     cm.Parameters.AddWithValue("@precio", producto.precio);
                     cm.Parameters.AddWithValue("@stock", producto.stock);
-                    cm.Parameters.AddWithValue("@imagen", producto.imagen);
-                    cm.Parameters.AddWithValue("@fecha", producto.fechaRegistro);
-                  
+                    cm.Parameters.AddWithValue("@imagen", producto.imagen);                  
 
                     idRegistrado = Convert.ToInt32(cm.ExecuteScalar());
                 }

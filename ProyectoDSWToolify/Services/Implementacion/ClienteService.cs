@@ -7,6 +7,7 @@ using System.Linq;
 using Microsoft.Extensions.Configuration;
 using ProyectoDSWToolify.Models.ViewModels;
 using ProyectoDSWToolify.Services.Contratos;
+using ProyectoDSWToolify.Models.ViewModels.ClienteVM;
 
 namespace ProyectoDSWToolify.Services.Implementacion
 {

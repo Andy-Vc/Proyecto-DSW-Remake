@@ -9,8 +9,5 @@ namespace ApiToolify.Data.Contratos
         List<VentaPorMesDTO> VentaPorMes(string consulta);
         List<VentaPorMesAndTipoVentaDTO> VentaPorMesAndTipoVenta(string consulta);
         List<VentaPorDistritoDTO> VentaPorDistrito(string consulta);
-
-
-
     }
 }
