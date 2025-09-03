@@ -9,5 +9,6 @@ namespace ProyectoDSWToolify.Services.Contratos
         Task<Proveedor> RegistrarProveedor(Proveedor proveedor);
         Task<Proveedor> actualizarProveedor(Proveedor proveedor);
         Task<int> desactivarProveedor(int id);
+        Task<int> Activar(int id);
     }
 }

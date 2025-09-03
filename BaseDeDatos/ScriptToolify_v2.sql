@@ -7,7 +7,7 @@ as
 begin
 	SELECT pv.ID_PROVEEDOR, pv.RUC, pv.RAZON_SOCIAL, pv.TELEFONO, 
 	pv.DIRECCION, dt.NOMBRE, pv.FECHA_REGISTRO, pv.ESTADO FROM TB_PROVEEDOR pv
-	INNER JOIN TB_DISTRITO dt ON pv.ID_DISTRITO = dt.ID_DISTRITO where pv.ESTADO = 1
+	INNER JOIN TB_DISTRITO dt ON pv.ID_DISTRITO = dt.ID_DISTRITO
 end
 go
 
@@ -63,6 +63,10 @@ begin
 			update TB_PROVEEDOR 
 			set ESTADO = 0 where ID_PROVEEDOR = @idProveedor
 		end
+	IF @tipo = 'activar'
+		BEGIN
+			UPDATE TB_PROVEEDOR SET ESTADO = 1 WHERE ID_PROVEEDOR = @idProveedor
+		END
 end
 GO
 
@@ -209,9 +213,9 @@ go
 create or alter proc listarProductos
 as 
 begin
-	select pr.ID_PRODUCTO, pr.NOMBRE,pr.DESCRIPCION, pv.ID_PROVEEDOR,pv.RAZON_SOCIAL, ct.ID_CATEGORIA,ct.DESCRIPCION,pr.IMAGEN, pr.PRECIO, pr.STOCK from TB_PRODUCTO pr 
+	select pr.ID_PRODUCTO, pr.NOMBRE,pr.DESCRIPCION, pv.ID_PROVEEDOR,pv.RAZON_SOCIAL, ct.ID_CATEGORIA,ct.DESCRIPCION,pr.IMAGEN, pr.PRECIO, pr.STOCK,pr.ESTADO from TB_PRODUCTO pr 
 	INNER JOIN TB_CATEGORIA ct ON pr.ID_CATEGORIA = ct.ID_CATEGORIA
-	INNER JOIN TB_PROVEEDOR pv ON pr.ID_PROVEEDOR = pv.ID_PROVEEDOR where pr.ESTADO = 1
+	INNER JOIN TB_PROVEEDOR pv ON pr.ID_PROVEEDOR = pv.ID_PROVEEDOR
 end
 go
 
@@ -250,7 +254,10 @@ begin
 		begin
 			update TB_PRODUCTO set ESTADO = 0 where ID_PRODUCTO = @idProducto
 		end
-
+	IF @tipo = 'activar'
+		BEGIN
+			UPDATE TB_PRODUCTO SET ESTADO = 1 WHERE ID_PRODUCTO = @idProducto
+		END
 	if @tipo = 'detalle'
 		begin
 			select pr.ID_PRODUCTO, pr.NOMBRE, pr.DESCRIPCION,pv.ID_PROVEEDOR ,pv.RAZON_SOCIAL,ct.ID_CATEGORIA ,ct.DESCRIPCION, pr.PRECIO, pr.STOCK, pr.IMAGEN,
@@ -480,11 +487,6 @@ BEGIN
     VALUES (@ID_VENTA, @ID_PRODUCTO, @CANTIDAD, @SUB_TOTAL);
 END
 GO
-
-
-select * from TB_USUARIO
-go
-
 
 CREATE OR ALTER PROC countRemotasPendientes
     @Estado CHAR(1)

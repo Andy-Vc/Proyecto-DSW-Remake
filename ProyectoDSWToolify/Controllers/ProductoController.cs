@@ -22,59 +22,46 @@ namespace ProyectoDSWToolify.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(int pag = 1, int proveedor = 0, int categoria = 0)
+        public async Task<IActionResult> Index(int pag = 1, int proveedor = 0, int categoria = 0, string searchQuery = "")
         {
-            var listado = await productoService.ListaCompleta();
-            var nombreProveedor = "";
-            var nombreCategoria = "";
-
             ViewBag.Proveedores = new SelectList(await proveedorService.obtenerListadoProveedor(), "idProveedor", "razonSocial", proveedor);
             ViewBag.Categorias = new SelectList(await categoriaService.ListaCategoria(), "idCategoria", "descripcion", categoria);
 
+            var listado = await productoService.ListaCompleta();
             if (proveedor > 0)
             {
                 listado = listado.Where(x => x.proveedor.idProveedor == proveedor).ToList();
-                nombreProveedor = listado.FirstOrDefault()?.proveedor.razonSocial;
             }
 
             if (categoria > 0)
             {
                 listado = listado.Where(x => x.categoria.idCategoria == categoria).ToList();
-                nombreCategoria = listado.FirstOrDefault()?.categoria.descripcion;
             }
 
-            if (proveedor > 0 || categoria > 0)
+            if (!string.IsNullOrEmpty(searchQuery))
             {
-                var mensaje = "Se filtró por ";
-
-                if (proveedor != 0)
-                    mensaje += nombreProveedor;
-
-                if (categoria != 0)
-                {
-                    if (proveedor != 0)
-                        mensaje += ", ";
-                    mensaje += nombreCategoria;
-                }
-
-                if (listado.Count > 0)
-                {
-                    TempData["GoodMessage"] = mensaje;
-                }
-                else
-                {
-                    listado = await productoService.ListaCompleta();
-                    TempData["ErrorMessage"] = "No hay productos para esos filtros";
-                }
+                listado = listado.Where(x => x.nombre.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)).ToList();
             }
-            var paginasTotales = listado.Count;
-            var paginasMax = 9;
-            var numeroPag = (int)Math.Ceiling((double)paginasTotales / paginasMax);
-            ViewBag.pagActual = pag;
-            ViewBag.numeroPag = numeroPag;
-            var skip = (pag - 1) * paginasMax;
 
-            return View(listado.Skip(skip).Take(paginasMax));
+
+            if (listado.Count == 0 && (proveedor > 0 || categoria > 0 || !string.IsNullOrEmpty(searchQuery)))
+            {
+                TempData["ErrorMessage"] = "No hay productos para esos filtros.";
+            }
+
+            var totalRegistros = listado.Count;
+            var registrosPorPagina = 9;
+            var totalPaginas = (int)Math.Ceiling((double)totalRegistros / registrosPorPagina);
+
+            ViewBag.TotalPages = totalPaginas;
+            ViewBag.Page = pag;
+            ViewBag.ProveedorId = proveedor;
+            ViewBag.CategoriaId = categoria;
+            ViewBag.CurrentSearchQuery = searchQuery;
+
+            var productosPaginados = listado.Skip((pag - 1) * registrosPorPagina).Take(registrosPorPagina);
+
+            return View(productosPaginados);
         }
 
         [HttpGet]
@@ -117,23 +104,36 @@ namespace ProyectoDSWToolify.Controllers
             return View(prdEncontrado);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> ToggleEstado(int id)
         {
-            var prdEncontrado = await productoService.ObtenerIdProducto(id);
-            return View(prdEncontrado);
-        }
+            var producto = await productoService.ObtenerIdProducto(id);
+            if (producto == null)
+                return NotFound();
 
-        [HttpPost]
-        [ActionName("Delete")]
-        public async Task<IActionResult> Delete_Confirm(int id)
-        {
-            var prdEnc = await productoService.ObtenerIdProducto(id);
-            await productoService.DesactivarProducto(id);
+            int resultado = 0;
 
-            TempData["GoodMessage"] = $"Se desactivó el producto {prdEnc.descripcion} código: {prdEnc.idProducto}";
+            if ((bool)producto.estado)
+            {
+                resultado = await productoService.DesactivarProducto(id);
+                if (resultado > 0)
+                    TempData["GoodMessage"] = "Producto desactivado correctamente.";
+                else
+                    TempData["ErrorMessage"] = "No se pudo desactivar el producto.";
+            }
+            else
+            {
+                resultado = await productoService.ActivarProducto(id);
+                if (resultado > 0)
+                    TempData["GoodMessage"] = "Producto activado correctamente.";
+                else
+                    TempData["ErrorMessage"] = "No se pudo activar el producto.";
+            }
+
+            if (resultado > 0)
+                return RedirectToAction("Index");
+
+            TempData["ErrorMessage"] = "No se pudo cambiar el estado";
             return RedirectToAction("Index");
         }
-
     }
 }

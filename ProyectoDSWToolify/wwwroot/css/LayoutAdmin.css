@@ -4,7 +4,7 @@
 
 .sidebar {
     width: 250px;
-    background-color: var(--color-primary-dark);
+    background-color: var(--color-gray-900);
     position: fixed;
     top: 0;
     bottom: 0;
@@ -30,7 +30,7 @@
 
 .topbar {
     height: 60px;
-    background-color: var(--color-primary);
+    background-color: var(--color-gray-900);
     color: white;
     display: flex;
     align-items: center;
@@ -98,4 +98,27 @@
     box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1);
     transform: translateY(-2px);
     transition: all 0.2s ease-in-out;
+}
+.pagination .page-item .page-link {
+    border-radius: 50rem; 
+    margin: 0 4px; 
+    border: none; 
+    color: #6c757d; 
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: var(--color-primary-dark);
+    color: var(--color-gray-50);
+}
+
+.pagination .page-item:not(.active) .page-link:hover {
+    background-color: var(--color-primary-dark);
+    color: var(--color-gray-50) !important;
+}
+
+.pagination .page-item.disabled .page-link {
+    background-color: transparent;
+    color: #adb5bd;
+    cursor: not-allowed;
 }

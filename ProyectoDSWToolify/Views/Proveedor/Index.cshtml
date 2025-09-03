@@ -1,76 +1,90 @@
 ﻿@model IEnumerable<ProyectoDSWToolify.Models.Proveedor>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
-<link rel="stylesheet" href="~/css/EstilosChay.css"/>
 @{
-    ViewData["Title"] = "Index";
-    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+	ViewData["Title"] = "Proveedores";
+	Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h1>Index</h1>
+<div class="container-fluid px-4">
+	<h1 class="mt-4 mb-3 fw-bold">Listado de Proveedores</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.idProveedor)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ruc)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.razonSocial)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.telefono)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.direccion)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.distrito.nombre)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.fechaRegistro)
-            </th>
-       
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.idProveedor)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ruc)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.razonSocial)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.telefono)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.direccion)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.distrito.nombre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.fechaRegistro)
-            </td>
-     
-            <td>
-                    @Html.ActionLink("Edit", "Actualizar", new { id = item.idProveedor }) |
-                    @Html.ActionLink("Details", "Details", new { id = item.idProveedor }) |
-                    @Html.ActionLink("Delete", "Desactivar", new { id = item.idProveedor })
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+	<div class="mb-3">
+		<a asp-action="Create" class="btn btn-success">
+			<i class="bi bi-plus-circle"></i> Nuevo Proveedor
+		</a>
+	</div>
+
+	<div class="card-body table-responsive">
+		<table class="table table-bordered table-hover align-middle">
+			<thead class="table-dark">
+				<tr>
+					<th>Id</th>
+					<th>Ruc</th>
+					<th>Razon Social</th>
+					<th>Telefono</th>
+					<th>Direccion</th>
+					<th>Distrito</th>
+					<th>Fecha Registro</th>
+					<th>Acciones</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var item in Model)
+				{
+					<tr>
+						<td>@item.idProveedor</td>
+						<td>@item.ruc</td>
+						<td>@item.razonSocial</td>
+						<td>@item.telefono</td>
+						<td>@item.direccion</td>
+						<td>@item.distrito?.nombre</td>
+						<td>@item.fechaRegistro?.ToString("dd/MM/yyyy")</td>
+						<td>
+							<a asp-action="Actualizar" asp-route-id="@item.idProveedor" class="btn btn-sm btn-warning me-1">
+								<i class="bi bi-pencil-square"></i>
+							</a>
+							<a asp-action="Details" asp-route-id="@item.idProveedor" class="btn btn-sm btn-info text-white me-1">
+								<i class="bi bi-eye"></i>
+							</a>
+							@if ((bool)item.estado)
+							{
+								<a asp-action="ToggleEstado" asp-route-id="@item.idProveedor" class="btn btn-sm btn-success" title="Desactivar">
+									<i class="bi bi-toggle-on"></i>
+								</a>
+							}
+							else
+							{
+								<a asp-action="ToggleEstado" asp-route-id="@item.idProveedor" class="btn btn-sm btn-danger" title="Activar">
+									<i class="bi bi-toggle-off"></i>
+								</a>
+							}
+
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+		<nav aria-label="Page navigation example">
+			<ul class="pagination justify-content-center">
+				<li class="page-item @(ViewBag.Page == 1 ? "disabled" : "")">
+					<a class="page-link" asp-action="Index" asp-route-page="@(ViewBag.Page - 1)" aria-label="Previous">
+						<span aria-hidden="true">&laquo;</span>
+					</a>
+				</li>
+
+				@for (int i = 1; i <= ViewBag.TotalPages; i++)
+				{
+					<li class="page-item @(i == ViewBag.Page ? "active" : "")">
+						<a class="page-link" asp-action="Index" asp-route-page="@i">@i</a>
+					</li>
+				}
+
+				<li class="page-item @(ViewBag.Page == ViewBag.TotalPages ? "disabled" : "")">
+					<a class="page-link" asp-action="Index" asp-route-page="@(ViewBag.Page + 1)" aria-label="Next">
+						<span aria-hidden="true">&raquo;</span>
+					</a>
+				</li>
+			</ul>
+		</nav>
+	</div>
+</div>

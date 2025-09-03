@@ -128,7 +128,13 @@ namespace ApiToolify.Controllers
             return Ok(prdDesactivado);
         }
 
-
+        [HttpPost]
+        [Route("activar/{id}")]
+        public IActionResult Activar(int id)
+        {
+            var prdActivado = dataProducto.Eliminar("activar", id);
+            return Ok(prdActivado);
+        }
 
 
     }

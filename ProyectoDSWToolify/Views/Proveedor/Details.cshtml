@@ -2,60 +2,71 @@
 
 @{
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalles del Proveedor";
 }
 
-<h1>Details</h1>
+<div class="container-fluid px-4">
+    <h1 class="mt-4 mb-3 fw-bold">Detalles del Proveedor</h1>
 
-<div>
-    <h4>Proveedor</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.idProveedor)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.idProveedor)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ruc)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ruc)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.razonSocial)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.razonSocial)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.telefono)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.telefono)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.direccion)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.direccion)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.fechaRegistro)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.fechaRegistro)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.estado)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.estado)
-        </dd>
-    </dl>
-</div>
-<div>
-    @Html.ActionLink("Actualizar", "Actualizar", new {  id = Model.idProveedor }) |
-    <a asp-action="Index">Back to List</a>
+    <div class="card">
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Id Proveedor</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(m => m.idProveedor)</dd>
+
+                <dt class="col-sm-3">Ruc</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(m => m.ruc)</dd>
+
+                <dt class="col-sm-3">Razon Social</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(m => m.razonSocial)</dd>
+
+                <dt class="col-sm-3">Telefono</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(m => m.telefono)</dd>
+
+                <dt class="col-sm-3">Dirección</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(m => m.direccion)</dd>
+
+                <dt class="col-sm-3">Distrito</dt>
+                <dd class="col-sm-9">@Model.distrito?.nombre</dd>
+
+                <dt class="col-sm-3">Fecha Registro</dt>
+                <dd class="col-sm-9">@Model.fechaRegistro?.ToString("dd/MM/yyyy")</dd>
+
+                <dt class="col-sm-3">Estado</dt>
+                <dd class="col-sm-9">
+                    @if (Model.estado.HasValue)
+                    {
+                        if (Model.estado.Value)
+                        {
+                            <span class="badge fs-6 text-black">
+                                <i class="bi bi-check-circle-fill"></i> Activo
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge fs-6 text-black">
+                                <i class="bi bi-x-circle-fill"></i> Eliminado
+                            </span>
+                        }
+                    }
+                    else
+                    {
+                        <span class="badge fs-6 text-black">
+                            <i class="bi bi-question-circle-fill"></i> Sin estado
+                        </span>
+                    }
+                </dd>
+
+            </dl>
+        </div>
+    </div>
+
+    <div class="mt-4 d-flex justify-content-between">
+        <a asp-action="Actualizar" asp-route-id="@Model.idProveedor" class="btn btn-warning">
+            <i class="bi bi-pencil-square"></i> Editar
+        </a>
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="bi bi-arrow-left-circle"></i> Volver al Listado
+        </a>
+    </div>
 </div>

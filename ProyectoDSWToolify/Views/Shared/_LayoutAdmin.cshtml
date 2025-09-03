@@ -25,11 +25,17 @@
         </button>
         <h2 class="fw-bold">Toolify</h2>
         <div class="d-flex align-items-center">
-            <span class="me-3">@User.Identity.Name @User.FindFirst("Apellido")?.Value</span>
+            <span class="me-3">
+                <i class="fa fa-user me-1" aria-hidden="true"></i>
+                @User.Identity.Name @User.FindFirst("Apellido")?.Value
+            </span>
             <form asp-controller="UserAuth" asp-action="Logout" method="post" class="d-inline">
-                <button class="btn btn-outline-light"><i class="bi bi-box-arrow-right"></i> Salir</button>
+                <button class="btn btn-outline-light">
+                    <i class="fa fa-sign-out-alt me-1" aria-hidden="true"></i> Salir
+                </button>
             </form>
         </div>
+
     </div>
 
     <!-- Sidebar -->
@@ -47,6 +53,7 @@
                 <div class="collapse ps-3" id="listadosMenu">
                     <a asp-controller="Proveedor" asp-action="Index" class="nav-link">Proveedores</a>
                     <a asp-controller="Producto" asp-action="Index" class="nav-link">Productos</a>
+                    <a asp-controller="Admin" asp-action="Categoria" class="nav-link">Categorias</a>
                 </div>
             </li>
             <li class="nav-item">

@@ -11,16 +11,43 @@
         ventaTipoDataRaw
     } = window.dashboardData;
 
-    function getRandomColor() {
-        const letters = '0123456789ABCDEF';
-        let color = '#';
-        for (let i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * 16)];
-        }
-        return color;
-    }
+    // Paleta de colores mejorada y armoniosa para el dashboard
 
-    // Categoría por Producto
+    const categoriaColors = [
+        '#1f497d', // azul oscuro fuerte
+        '#4f81bd', // azul medio
+        '#9bbb59', // verde oliva claro
+        '#c0504d', // rojo ladrillo (para acentos)
+        '#f79646', // naranja cálido
+        '#8064a2', // púrpura suave
+        '#4bacc6', // azul aqua
+        '#f2c80f'  // amarillo mostaza
+    ];
+
+    const proveedorColors = [
+        '#2f5597', // azul oscuro
+        '#3d85c6', // azul claro
+        '#6aa84f', // verde oliva
+        '#38761d', // verde oscuro
+        '#e69138', // naranja quemado
+        '#6d9eeb'  // azul pastel
+    ];
+
+    const distritoColors = [
+        '#a9d18e', // verde pastel
+        '#ffd966', // amarillo pastel
+        '#f4b084', // naranja pastel
+        '#9dc3e6', // azul pastel
+        '#c5a5c5', // lavanda pastel
+        '#d9d9d9'  // gris claro neutro
+    ];
+
+    const tipoVentaColors = {
+        'P': '#2e75b6', // Presencial - azul saturado
+        'R': '#a9d18e'  // Remota - naranja suave
+    };
+
+    // Gráfico de Categorías (pie)
     new Chart(document.getElementById('categoriaChart').getContext('2d'), {
         type: 'pie',
         data: {
@@ -28,7 +55,7 @@
             datasets: [{
                 label: 'Productos por Categoría',
                 data: categoriaData,
-                backgroundColor: categoriaLabels.map(() => getRandomColor())
+                backgroundColor: categoriaLabels.map((_, i) => categoriaColors[i % categoriaColors.length])
             }]
         },
         options: {
@@ -46,8 +73,7 @@
         }
     });
 
-
-    // Proveedor por Producto
+    // Gráfico de Proveedores (bar)
     new Chart(document.getElementById('proveedorChart').getContext('2d'), {
         type: 'bar',
         data: {
@@ -55,7 +81,7 @@
             datasets: [{
                 label: 'Productos por Proveedor',
                 data: proveedorData,
-                backgroundColor: proveedorLabels.map(() => getRandomColor())
+                backgroundColor: proveedorLabels.map((_, i) => proveedorColors[i % proveedorColors.length])
             }]
         },
         options: {
@@ -65,7 +91,7 @@
         }
     });
 
-    // Venta por Distrito
+    // Gráfico de Distritos (bar)
     new Chart(document.getElementById('distritoChart').getContext('2d'), {
         type: 'bar',
         data: {
@@ -73,7 +99,7 @@
             datasets: [{
                 label: 'Ventas por Distrito',
                 data: distritoData,
-                backgroundColor: distritoLabels.map(() => getRandomColor())
+                backgroundColor: distritoLabels.map((_, i) => distritoColors[i % distritoColors.length])
             }]
         },
         options: {
@@ -83,7 +109,7 @@
         }
     });
 
-    // Venta por Mes
+    // Gráfico de Ventas por Mes (line)
     new Chart(document.getElementById('mesChart').getContext('2d'), {
         type: 'line',
         data: {
@@ -91,8 +117,9 @@
             datasets: [{
                 label: 'Ventas por Mes',
                 data: mesData,
-                borderColor: '#3e95cd',
-                fill: false,
+                borderColor: '#1f497d', // azul oscuro fuerte
+                backgroundColor: 'rgba(31, 73, 125, 0.3)',
+                fill: true,
                 tension: 0.1
             }]
         },
@@ -103,20 +130,18 @@
         }
     });
 
-    // Venta por Mes y Tipo de Venta (barras apiladas)
+    // Gráfico Ventas por Mes y Tipo de Venta (barras apiladas)
     const mesesUnicos = [...new Set(ventaTipoDataRaw.map(x => x.mes))];
     const tiposUnicos = [...new Set(ventaTipoDataRaw.map(x => x.tipoVenta))];
 
-    const datasetsMesTipo = tiposUnicos.map(tipo => {
-        return {
-            label: tipo,
-            data: mesesUnicos.map(mes => {
-                const item = ventaTipoDataRaw.find(x => x.mes === mes && x.tipoVenta === tipo);
-                return item ? item.cantidadVentas : 0;
-            }),
-            backgroundColor: getRandomColor()
-        };
-    });
+    const datasetsMesTipo = tiposUnicos.map(tipo => ({
+        label: tipo === 'P' ? 'Presencial' : (tipo === 'R' ? 'Remota' : tipo),
+        data: mesesUnicos.map(mes => {
+            const item = ventaTipoDataRaw.find(x => x.mes === mes && x.tipoVenta === tipo);
+            return item ? item.cantidadVentas : 0;
+        }),
+        backgroundColor: tipoVentaColors[tipo] || '#999999'
+    }));
 
     new Chart(document.getElementById('mesTipoVentaChart').getContext('2d'), {
         type: 'bar',
@@ -129,6 +154,11 @@
             scales: {
                 x: { stacked: true },
                 y: { stacked: true, beginAtZero: true }
+            },
+            plugins: {
+                legend: {
+                    position: 'top'
+                }
             }
         }
     });

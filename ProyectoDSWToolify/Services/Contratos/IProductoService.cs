@@ -9,5 +9,6 @@ namespace ProyectoDSWToolify.Services.Contratos
         Task<Producto> RegistrarProducto(Producto producto);
         Task<Producto> ActualizarProducto(Producto producto);
         Task<int> DesactivarProducto(int id);
+        Task<int> ActivarProducto(int id);
     }
 }

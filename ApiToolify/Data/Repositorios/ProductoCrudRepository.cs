@@ -91,6 +91,7 @@ namespace ProyectoDSWToolify.Data.Repositorios
                                     imagen = r.IsDBNull(7) ? "" : r.GetString(7),
                                     precio = r.IsDBNull(8) ? 0 : r.GetDecimal(8),
                                     stock = r.IsDBNull(9) ? 0 : r.GetInt32(9),
+                                    estado = !r.IsDBNull(10) && r.GetBoolean(10)
                                 });
                                 
                             }

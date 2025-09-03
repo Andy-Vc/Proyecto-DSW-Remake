@@ -58,5 +58,13 @@ namespace ApiToolify.Controllers
             return Ok(proveedorDesactivado);    
         }
 
+        [HttpPost]
+        [Route("activar/{id}")]
+        public IActionResult Activar(int id)
+        {
+            var proveedorActivado = proveData.Eliminar("activar", id);
+            return Ok(proveedorActivado);
+        }
+
     }
 }

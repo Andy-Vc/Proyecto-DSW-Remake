@@ -27,4 +27,8 @@
     <TypeScriptCompile Include="wwwroot\js\InicioVendedor.js" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\uploads\" />
+  </ItemGroup>
+
 </Project>

@@ -1,87 +1,109 @@
 ﻿@model ProyectoDSWToolify.Models.Producto
 
 @{
-	Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
-	ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Editar Producto";
 }
 
-<h1>Edit</h1>
+<div class="container-fluid px-4">
+    <h1 class="mt-4 mb-3 fw-bold">Editar Producto</h1>
 
-<h4>Producto</h4>
-<hr />
-<div class="row">
-	<div class="col-md-4">
-		<form asp-action="Edit" method="post" enctype="multipart/form-data">
-			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
-			<div class="form-group">
-				<label asp-for="idProducto" class="control-label"></label>
-				<input asp-for="idProducto" class="form-control" readonly />
-				<span asp-validation-for="idProducto" class="text-danger"></span>
-			</div>
-			<div class="form-group">
-				<label asp-for="nombre" class="control-label"></label>
-				<input asp-for="nombre" class="form-control" />
-				<span asp-validation-for="nombre" class="text-danger"></span>
-			</div>
-			<div class="form-group">
-				<label asp-for="descripcion" class="control-label"></label>
-				<input asp-for="descripcion" class="form-control" />
-				<span asp-validation-for="descripcion" class="text-danger"></span>
-			</div>
-			<div class="form-group">
-				<label asp-for="categoria.idCategoria" class="control-label"></label>
-				@Html.DropDownListFor(model => model.categoria.idCategoria, (SelectList)ViewBag.Categorias, "--Seleccione--", new { @class = "form-control" })
-				<span asp-validation-for="categoria.idCategoria" class="text-danger"></span>
-			</div>
-			<div class="form-group">
-				<label asp-for="proveedor.idProveedor" class="control-label"></label>
-				@Html.DropDownListFor(model => model.proveedor.idProveedor, (SelectList)ViewBag.Proveedores, "--Seleccione--", new { @class = "form-control" })
-				<span asp-validation-for="proveedor.idProveedor" class="text-danger"></span>
-			</div>
-			<div class="form-group">
-				<label asp-for="precio" class="control-label"></label>
-				<input asp-for="precio" class="form-control" />
-				<span asp-validation-for="precio" class="text-danger"></span>
-			</div>
-			<div class="form-group">
-				<label asp-for="stock" class="control-label"></label>
-				<input asp-for="stock" class="form-control" />
-				<span asp-validation-for="stock" class="text-danger"></span>
-			</div>
-			<div class="form-group">
-				<label asp-for="imagen" class="control-label"></label>
-				<img src="@(string.IsNullOrEmpty(Model.imagen)
-													  		 ? Url.Content("~/uploads/ErrorImagen.png")
-													  		 : Url.Content(Model.imagen))"
-					 style="max-width:200px; height:auto;" />
-				<span asp-validation-for="imagen" class="text-danger"></span>
-			</div>
-			<div class="form-group">
-				<label asp-for="file" class="control-label"></label>
-				<input asp-for="file" class="form-control" type="file" />
-				<span asp-validation-for="file" class="text-danger"></span>
-			</div>
-			<input type="hidden" asp-for="imagen" /> 
-			<!-- Aca ocultamos la ruta de la imagen q se tiene para mandarlo tambien en el form -->
-			<div class="form-group">
-				<label asp-for="fechaRegistro" class="control-label"></label>
-				<input asp-for="fechaRegistro" class="form-control" />
-				<span asp-validation-for="fechaRegistro" class="text-danger"></span>
-			</div>
+    <div class="card">
+        <div class="card-body">
+            <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
-			<div class="form-group">
-				<input type="submit" value="Save" class="btn btn-primary" />
-			</div>
-		</form>
-	</div>
-</div>
+                <input type="hidden" asp-for="imagen" />
+                <input type="hidden" asp-for="fechaRegistro" />
 
-<div>
-	<a asp-action="Index">Back to List</a>
+                <div class="mb-3">
+                    <label asp-for="idProducto" class="form-label">ID</label>
+                    <input asp-for="idProducto" class="form-control" readonly />
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label asp-for="nombre" class="form-label">Nombre</label>
+                        <input asp-for="nombre" class="form-control" />
+                        <span asp-validation-for="nombre" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="descripcion" class="form-label">Descripción</label>
+                        <input asp-for="descripcion" class="form-control" />
+                        <span asp-validation-for="descripcion" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label asp-for="categoria.idCategoria" class="form-label">Categoría</label>
+                        @Html.DropDownListFor(model => model.categoria.idCategoria, (SelectList)ViewBag.Categorias, "Seleccione una Categoría", new { @class = "form-select" })
+                        <span asp-validation-for="categoria.idCategoria" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="proveedor.idProveedor" class="form-label">Proveedor</label>
+                        @Html.DropDownListFor(model => model.proveedor.idProveedor, (SelectList)ViewBag.Proveedores, "Seleccione un Proveedor", new { @class = "form-select" })
+                        <span asp-validation-for="proveedor.idProveedor" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label asp-for="precio" class="form-label">Precio</label>
+                        <input asp-for="precio" class="form-control" />
+                        <span asp-validation-for="precio" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="stock" class="form-label">Stock</label>
+                        <input asp-for="stock" class="form-control" />
+                        <span asp-validation-for="stock" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label">Imagen actual</label><br />
+                        <img id="preview-img" src="@(string.IsNullOrEmpty(Model.imagen)
+                                                    ? Url.Content("~/uploads/ErrorImagen.png")
+                                                    : Url.Content(Model.imagen))"
+                             class="img-thumbnail" style="max-width: 100%;" />
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="file" class="form-label">Nueva Imagen</label>
+                        <input asp-for="file" class="form-control" type="file" onchange="mostrarVistaPrevia(event)" />
+                        <span asp-validation-for="file" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left-circle"></i> Volver
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save"></i> Guardar Cambios
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 @section Scripts {
-	@{
-		await Html.RenderPartialAsync("_ValidationScriptsPartial");
-	}
+    <script>
+        function mostrarVistaPrevia(event) {
+            const preview = document.getElementById('preview-img');
+            const file = event.target.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

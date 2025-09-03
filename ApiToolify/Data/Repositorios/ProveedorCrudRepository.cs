@@ -105,7 +105,7 @@ namespace ProyectoDSWToolify.Data.Repositorios
         }
 
         public int Eliminar(string tipo, int id)
-        { 
+        {
             using (SqlConnection cn = new SqlConnection(cadenaConexion))
             {
                 cn.Open();
@@ -115,12 +115,9 @@ namespace ProyectoDSWToolify.Data.Repositorios
                     cm.Parameters.AddWithValue("@tipo", tipo);
                     cm.Parameters.AddWithValue("@idProveedor", id);
 
-                    int filasAfectadas = cm.ExecuteNonQuery();
-
-                    return filasAfectadas;
+                    return cm.ExecuteNonQuery();
                 }
             }
-           
         }
 
         public Proveedor ObtenerId(string tipo, int id)

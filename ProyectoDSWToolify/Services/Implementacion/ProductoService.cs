@@ -137,5 +137,16 @@ namespace ProyectoDSWToolify.Services.Implementacion
 
             return 0; 
         }
+
+        public async Task<int> ActivarProducto(int id)
+        {
+            var response = await _httpClient.PostAsync($"producto/activar/{id}", null);
+            if (response.IsSuccessStatusCode)
+            {
+                var data = await response.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<int>(data);
+            }
+            return 0;
+        }
     }
 }
