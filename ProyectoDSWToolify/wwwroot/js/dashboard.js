@@ -11,8 +11,6 @@
         ventaTipoDataRaw
     } = window.dashboardData;
 
-    // Paleta de colores mejorada y armoniosa para el dashboard
-
     const categoriaColors = [
         '#1f497d', // azul oscuro fuerte
         '#4f81bd', // azul medio

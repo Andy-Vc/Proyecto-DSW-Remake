@@ -1,19 +1,13 @@
 ﻿using System.Security.Claims;
-using Azure;
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Newtonsoft.Json;
-using ProyectoDSWToolify.Models;
-using ProyectoDSWToolify.Models.ViewModels;
 using ProyectoDSWToolify.Models.ViewModels.AdminVM;
 using ProyectoDSWToolify.Services.Contratos;
-using ProyectoDSWToolify.Services.Implementacion;
 
 namespace ProyectoDSWToolify.Controllers
 {
-    //[Authorize(Roles = "A")]
+    [Authorize(Roles = "A")]
     public class AdminController : Controller
     {
         private readonly IAdminService adminService;

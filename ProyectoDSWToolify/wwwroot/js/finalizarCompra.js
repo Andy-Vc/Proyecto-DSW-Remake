@@ -8,9 +8,6 @@
 		}
 	});
 });
-
-
-// Formatear número de tarjeta (simple)
 function formatearNumeroTarjeta(input) {
 	let value = input.value.replace(/\D/g, '').substring(0, 16);
 	let formatted = '';
@@ -20,8 +17,6 @@ function formatearNumeroTarjeta(input) {
 	}
 	input.value = formatted;
 }
-
-// Solo números para inputs
 function soloNumeros(event) {
 	let charCode = (event.which) ? event.which : event.keyCode;
 	if (charCode > 31 && (charCode < 48 || charCode > 57)) {

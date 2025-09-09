@@ -71,24 +71,26 @@
 							</button>
 
 							<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownCuenta">
-								<li>
-									<a class="dropdown-item d-flex align-items-center gap-2" asp-controller="Cliente" asp-action="Perfil">
-										<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor"
-											 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="bi bi-person"
-											 viewBox="0 0 24 24" aria-hidden="true">
-											<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-											<circle cx="12" cy="7" r="4" />
-										</svg>
-										Mi perfil
-									</a>
-								</li>
-
-								<li><hr class="dropdown-divider" /></li>
 
 								@if (!string.IsNullOrEmpty(usuario))
 								{
+									<!-- Usuario logueado -->
 									<li>
-										<form asp-controller="UserAuth" asp-action="Logout" method="post">
+										<a class="dropdown-item d-flex align-items-center gap-2" asp-controller="Cliente" asp-action="Perfil">
+											<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor"
+												 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="bi bi-person"
+												 viewBox="0 0 24 24" aria-hidden="true">
+												<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+												<circle cx="12" cy="7" r="4" />
+											</svg>
+											Mi perfil
+										</a>
+									</li>
+
+									<li><hr class="dropdown-divider" /></li>
+
+									<li>
+										<form asp-controller="UserAuth" asp-action="Logout" method="post" class="m-0 p-0">
 											<button class="dropdown-item d-flex align-items-center gap-2" type="submit">
 												<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor"
 													 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="bi bi-box-arrow-right"
@@ -100,6 +102,35 @@
 												Cerrar sesión
 											</button>
 										</form>
+									</li>
+								}
+								else
+								{
+									<li>
+										<a class="dropdown-item d-flex align-items-center gap-2" asp-controller="UserAuth" asp-action="Login">
+											<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor"
+												 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="bi bi-box-arrow-in-right"
+												 viewBox="0 0 24 24" aria-hidden="true">
+												<path d="M10 17l5-5-5-5" />
+												<path d="M15 12H3" />
+												<path d="M19 19v-14" />
+											</svg>
+											Iniciar sesión
+										</a>
+									</li>
+									<li><hr class="dropdown-divider" /></li>
+									<li>
+										<a class="dropdown-item d-flex align-items-center gap-2" asp-controller="UserAuth" asp-action="Register">
+											<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor"
+												 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="bi bi-person-plus"
+												 viewBox="0 0 24 24" aria-hidden="true">
+												<path d="M15 14c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4z" />
+												<path d="M6 20v-2c0-2.21 3.58-4 8-4" />
+												<path d="M16 19v6" />
+												<path d="M19 22h-6" />
+											</svg>
+											Registrarse
+										</a>
 									</li>
 								}
 							</ul>
@@ -115,7 +146,7 @@
 								<path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
 							</svg>
 							<span class="position-absolute top-counter translate-middle badge rounded-pill bg-color-primary">
-								1
+								0
 							</span>
 						</button>
 					</div>
@@ -351,7 +382,6 @@
 		</footer>
 	</div>
 	<script src="~/lib/jquery/dist/jquery.min.js"></script>
-	<script src="~/js/site.js" asp-append-version="true"></script>
 	<!-- SCRIPT para la Alerta-->
 	<!-- Bootstrap JS + Popper -->
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

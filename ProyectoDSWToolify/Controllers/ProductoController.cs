@@ -3,11 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ProyectoDSWToolify.Models;
 using ProyectoDSWToolify.Services.Contratos;
-using System.Diagnostics;
 
 namespace ProyectoDSWToolify.Controllers
 {
-    //[Authorize(Roles = "A")]
+    [Authorize(Roles = "A")]
     public class ProductoController : Controller
     {
         private readonly IProveedorService proveedorService;

@@ -3,7 +3,6 @@
     fetch('/Carro/ObtenerCarrito')
         .then(response => response.json())
         .then(data => {
-            console.log('Datos recibidos:', data);
             const contenedor = document.getElementById('carritoProductos');
             const productosTotalesElem = document.getElementById('productosTotales');
             const totalCarritoElem = document.getElementById('totalCarrito');
@@ -28,7 +27,6 @@
                     src = `/assets/productos/P${item.idProducto}.jpg`;
                 }
 
-                console.log("Imagen cargada en carrito:", src);
                 const productoHtml = `
                     <div class="d-flex mb-3 align-items-start p-3 rounded bg-light shadow-sm position-relative">
                         <img src="${src}" alt="Producto" width="70" height="70" class="rounded me-3 object-fit-cover" onerror="this.onerror=null;this.src='/assets/no-imagen.jpg';" />
@@ -104,7 +102,6 @@ function aumentarCantidad(idProducto) {
             actualizarContadorCarrito();
         })
         .catch(error => {
-            console.error(error);
             Swal.fire('Error', 'No se pudo aumentar la cantidad', 'error');
         });
 }
@@ -129,7 +126,6 @@ function disminuirCantidad(idProducto) {
             actualizarContadorCarrito();
         })
         .catch(error => {
-            console.error(error);
             Swal.fire('Error', 'No se pudo disminuir la cantidad', 'error');
         });
 }
@@ -153,7 +149,6 @@ function eliminarProducto(idProducto) {
             }
         })
         .catch(err => {
-            console.error("Error al eliminar producto:", err);
             Swal.fire('Error', 'Error al eliminar el producto', 'error');
         });
 }

@@ -1,12 +1,13 @@
 ﻿using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProyectoDSWToolify.Models;
-using ProyectoDSWToolify.Models.ViewModels;
 using ProyectoDSWToolify.Models.ViewModels.RepartidorVM;
 using ProyectoDSWToolify.Services.Contratos;
 
 namespace ProyectoDSWToolify.Controllers
 {
+    [Authorize(Roles = "R")]
     public class RepartidorController : Controller
     {
         private readonly IVentaService ventaService;
@@ -77,6 +78,11 @@ namespace ProyectoDSWToolify.Controllers
         {
             var ventas = ventaService.ListarVentasRemotas().Result;
 
+            var ventaActiva = ventas.FirstOrDefault(v => v.estado == "T");
+
+            ViewBag.VentaActivaId = ventaActiva?.idVenta;
+
+            // Paginación normal
             int totalVentas = ventas.Count;
             var pagedVentas = ventas
                 .Skip((page - 1) * pageSize)
@@ -88,6 +94,7 @@ namespace ProyectoDSWToolify.Controllers
 
             return View(pagedVentas);
         }
+
 
         [HttpPost]
         public async Task<IActionResult> CambiarEstadoVenta(int idVenta)

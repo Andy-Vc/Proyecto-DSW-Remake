@@ -1,15 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ProyectoDSWToolify.Models;
 using ProyectoDSWToolify.Models.ViewModels.ClienteVM;
 using ProyectoDSWToolify.Models.ViewModels.VendedorVM;
 using ProyectoDSWToolify.Services.Contratos;
 
-using ProyectoDSWToolify.Services.Implementacion;
-
-
 namespace ProyectoDSWToolify.Controllers
 {
+    [Authorize(Roles = "V")]
     public class VendedorController : Controller
     {
         private readonly IVendedorService _vendedorService;

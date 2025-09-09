@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "Ventas Pendientes";
     Layout = "~/Views/Shared/_LayoutRepartidor.cshtml";
-    var ventaTransportando = Model.FirstOrDefault(v => v.estado == "T");
+    var ventaActivaId = ViewBag.VentaActivaId as int?;
 }
 <h1 class="display-5 fw-bold titulos-Primary mb-4">
     <i class="fas fa-truck-loading me-2"></i> Ventas Pendientes para Reparto
@@ -27,7 +27,7 @@ else
         {
             <div class="col">
                 @{
-                    bool estaActiva = ventaTransportando == null || ventaTransportando.idVenta == venta.idVenta;
+                    bool estaActiva = !ventaActivaId.HasValue || ventaActivaId == venta.idVenta;
                     string cardClass = estaActiva ? "" : "opacity-50";
                     string pointerEvents = estaActiva ? "" : "pointer-events-none";
                 }
@@ -75,15 +75,15 @@ else
                             else
                             {
                                 <button type="button"
-                                        class="btn btn-primary-custom  btn-sm w-100"
+                                        class="btn btn-primary-custom btn-sm w-100"
                                         data-bs-toggle="modal"
                                         data-bs-target="#chatModal"
-                                        data-idventa="@venta.idVenta" style="font-size: 1rem; 
-
-     height: 100%; 
-    padding: .5rem !important;">
+                                        data-idventa="@venta.idVenta"
+                                        style="font-size: 1rem; height: 100%; padding: .3rem !important;"
+                                @(estaActiva ? "" : "disabled")>
                                     <i class="fas fa-comments me-1"></i> Abrir Chat
                                 </button>
+
                             }
                         </div>
                     </div>
@@ -155,9 +155,7 @@ else
         </div>
     </div>
 </div>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 <script>
     window.currentUser = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(User.Identity.Name ?? ""));
         document.addEventListener("DOMContentLoaded", function () {

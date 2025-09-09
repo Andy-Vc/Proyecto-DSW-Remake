@@ -4,14 +4,9 @@ using Newtonsoft.Json;
 using ProyectoDSWToolify.Models;
 using ProyectoDSWToolify.Models.ViewModels;
 using ProyectoDSWToolify.Services.Contratos;
-
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
-using System.Net;
-using System.Threading.Tasks;
-
-
 
 namespace ProyectoDSWToolify.Controllers
 {

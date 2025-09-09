@@ -1,60 +1,105 @@
-﻿
-@{
-    Layout = null;
-    ViewData["Title"] = "Acceso Denegado";
+﻿@{
+	Layout = null;
+	ViewData["Title"] = "Acceso Denegado";
+
+	string controlador = "Cliente";
+	string accion = "Index";
+
+	if (User.Identity.IsAuthenticated)
+	{
+		if (User.IsInRole("A"))
+		{
+			controlador = "Admin";
+			accion = "Dashboard";
+		}
+		else if (User.IsInRole("V"))
+		{
+			controlador = "Vendedor";
+			accion = "Index";
+		}
+		else if (User.IsInRole("R"))
+		{
+			controlador = "Repartidor";
+			accion = "Index";
+		}
+		else if (User.IsInRole("C"))
+		{
+			controlador = "Cliente";
+			accion = "Index";
+		}
+	}
 }
-<link rel="stylesheet" href="~/css/Denegado.css" />
-<h1>Error</h1>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>@ViewData["Title"] - Toolify</title>
+	<link rel="stylesheet" href="~/css/site.css" />
+	<style>
+		body {
+			background-color: #f8f9fa;
+			font-family: 'Segoe UI', sans-serif;
+			overflow: hidden;
+		}
 
-<svg xmlns="http://www.w3.org/2000/svg" id="robot-error" viewBox="0 0 260 118.9" role="img">
-    <title xml:lang="en">403 Error</title>
+		.error-container {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			min-height: 100vh;
+			flex-direction: column;
+			text-align: center;
+			padding: 2rem;
+		}
 
-    <defs>
-        <clipPath id="white-clip"><circle id="white-eye" fill="#cacaca" cx="130" cy="65" r="20" /> </clipPath>
-        <text id="text-s" class="error-text" y="106"> 403 </text>
-    </defs>
-    <path class="alarm" fill="#e62326" d="M120.9 19.6V9.1c0-5 4.1-9.1 9.1-9.1h0c5 0 9.1 4.1 9.1 9.1v10.6" />
-    <use xlink:href="#text-s" x="-0.5px" y="-1px" fill="black"></use>
-    <use xlink:href="#text-s" fill="#2b2b2b"></use>
-    <g id="robot">
-        <g id="eye-wrap">
-            <use xlink:href="#white-eye"></use>
-            <circle id="eyef" class="eye" clip-path="url(#white-clip)" fill="#000" stroke="#2aa7cc" stroke-width="2" stroke-miterlimit="10" cx="130" cy="65" r="11" />
-            <ellipse id="white-eye" fill="#2b2b2b" cx="130" cy="40" rx="18" ry="12" />
-        </g>
-        <circle class="lightblue" cx="105" cy="32" r="2.5" id="tornillo" />
-        <use xlink:href="#tornillo" x="50"></use>
-        <use xlink:href="#tornillo" x="50" y="60"></use>
-        <use xlink:href="#tornillo" y="60"></use>
-    </g>
-</svg>
-<h1>No tienes permisos para estar aqui</h1>
-<h2><a asp-action="Index" asp-controller="Cliente"> Go Home!</a></h2>
-<script>
-        var root = document.documentElement;
-    var eyef = document.getElementById('eyef');
-    var cx = document.getElementById("eyef").getAttribute("cx");
-    var cy = document.getElementById("eyef").getAttribute("cy");
+		.error-code {
+			font-size: 8rem;
+			font-weight: 700;
+			color: #576EAA;
+			line-height: 1; 
+			margin-bottom: 1rem;
+		}
 
-    document.addEventListener("mousemove", evt => {
-      let x = evt.clientX / innerWidth;
-      let y = evt.clientY / innerHeight;
+		.error-title {
+			font-size: 2.8rem;
+			font-weight: 600;
+			margin-bottom: 1.5rem;
+			color: #333;
+		}
 
-      root.style.setProperty("--mouse-x", x);
-      root.style.setProperty("--mouse-y", y);
+		.error-message {
+			font-size: 1.3rem;
+			color: #666;
+			max-width: 650px;
+			margin-bottom: 2.5rem;
+			line-height: 1.6;
+		}
 
-      cx = 115 + 30 * x;
-      cy = 50 + 30 * y;
-      eyef.setAttribute("cx", cx);
-      eyef.setAttribute("cy", cy);
+		.btn-custom {
+			padding: 0.85rem 1.8rem;
+			font-size: 1.1rem;
+			border-radius: 0.5rem;
+			transition: all 0.3s ease;
+		}
 
-    });
-
-    document.addEventListener("touchmove", touchHandler => {
-      let x = touchHandler.touches[0].clientX / innerWidth;
-      let y = touchHandler.touches[0].clientY / innerHeight;
-
-      root.style.setProperty("--mouse-x", x);
-      root.style.setProperty("--mouse-y", y);
-    });
-</script>
+			.btn-custom:hover {
+				transform: translateY(-2px);
+				box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+			}
+	</style>
+</head>
+<body>
+	<div class="error-container">
+		<div class="error-code">403</div>
+		<div class="error-title">¡Ups! Acceso Denegado</div>
+		<div class="error-message">
+			Parece que no tienes los permisos necesarios para ver esta sección de Toolify. <br />
+			Si crees que esto es un error, por favor, contacta con el administrador.
+		</div>
+		<a asp-controller="@controlador" asp-action="@accion" class="btn bg-color-primary btn-custom shadow" style="text-decoration:none; color:white;">
+			Volver al Inicio
+		</a>
+	</div>
+</body>
+</html>

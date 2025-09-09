@@ -36,7 +36,6 @@
             }
         })
         .catch(error => {
-            console.error('Error:', error);
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
@@ -55,16 +54,13 @@ function cargarDetallesProducto(idProducto) {
             document.getElementById("modalDescripcionProducto").textContent = data.descripcion;
             document.getElementById("modalCategoriaProducto").textContent = data.categoria;
             document.getElementById("modalPrecioProducto").textContent = data.precio;
-            console.log("Valor de data.imagen:", data.imagen);
             const imgElem = document.getElementById("modalImagenProducto");
-            imgElem.src = data.imagen;  // Solo asignar la ruta
+            imgElem.src = data.imagen;  
 
-            // Opcional: para manejar error y poner imagen por defecto
             imgElem.onerror = function () {
                 this.onerror = null;
                 this.src = '/assets/no-imagen.jpg';
             };
-
 
             const stockWarning = document.getElementById("stockWarning");
             const btnAgregar = document.getElementById("btnAgregarCarrito");
@@ -93,6 +89,5 @@ function cargarDetallesProducto(idProducto) {
         })
         .catch(err => {
             alert("Error al cargar el producto");
-            console.error(err);
         });
 }

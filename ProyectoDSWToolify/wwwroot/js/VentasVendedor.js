@@ -47,7 +47,6 @@
             productosFiltrados = productos;
             renderProductos(productosFiltrados, 1);
         } catch (err) {
-            console.error(err);
             mostrarMensaje("Error al cargar productos. Intente de nuevo más tarde.", "danger");
         }
     }
@@ -95,7 +94,6 @@
 
         let botones = '';
 
-        // Botón anterior
         botones += `
         <li class="page-item ${pagina === 1 ? 'disabled' : ''}">
             <a class="page-link" href="#" data-pagina="${pagina - 1}" aria-label="Anterior">
@@ -104,7 +102,6 @@
         </li>
     `;
 
-        // Botones numéricos
         for (let i = 1; i <= totalPaginas; i++) {
             botones += `
             <li class="page-item ${i === pagina ? 'active' : ''}">
@@ -113,7 +110,6 @@
         `;
         }
 
-        // Botón siguiente
         botones += `
         <li class="page-item ${pagina === totalPaginas ? 'disabled' : ''}">
             <a class="page-link" href="#" data-pagina="${pagina + 1}" aria-label="Siguiente">
