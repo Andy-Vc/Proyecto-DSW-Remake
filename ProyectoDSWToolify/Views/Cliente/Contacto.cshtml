@@ -1,4 +1,5 @@
-﻿@{
+﻿@model ProyectoDSWToolify.Models.ViewModels.ContactoMensaje
+@{
     ViewBag.Title = "Contacto";
 }
 <div class="top--10">
@@ -94,40 +95,32 @@
                             <h4 class="mb-4">Envíanos un Mensaje</h4>
 
                             <!-- Puedes usar Html.BeginForm aquí si tienes una acción en tu controlador -->
-                            <form method="post">
+                            <form asp-action="ContactoPost" asp-controller="Cliente" method="post">
                                 <div class="row g-3 mb-3">
                                     <div class="col-md-6">
-                                        <label class="form-label">Nombre *</label>
-                                        <input type="text" class="form-control" placeholder="Tu nombre completo" required />
+                                        <label asp-for="nombre" class="form-label">Nombre *</label>
+                                        <input asp-for="nombre" class="form-control" placeholder="Tu nombre completo" required />
+                                        <span asp-validation-for="nombre" class="text-danger"></span>
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="form-label">Email *</label>
-                                        <input type="email" class="form-control" placeholder="tu@email.com" required />
+                                        <label asp-for="email" class="form-label">Email *</label>
+                                        <input asp-for="email" class="form-control" placeholder="tu@email.com" required />
+                                        <span asp-validation-for="email" class="text-danger"></span>
                                     </div>
                                 </div>
                                 <div class="row g-3 mb-3">
-                                    <div class="col-md-6">
-                                        <label class="form-label">Teléfono</label>
-                                        <input type="tel" class="form-control" placeholder="(555) 123-4567" />
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label class="form-label">Asunto *</label>
-                                        <select class="form-select" required>
-                                            <option selected disabled>Selecciona un asunto</option>
-                                            <option value="general">Consulta General</option>
-                                            <option value="product">Pregunta sobre Producto</option>
-                                            <option value="support">Soporte Técnico</option>
-                                            <option value="order">Estado de Pedido</option>
-                                            <option value="warranty">Reclamo de Garantía</option>
-                                            <option value="rental">Alquiler de Equipos</option>
-                                        </select>
+                                    <div class="col-md-12">
+                                        <label asp-for="telefono" class="form-label">Teléfono</label>
+                                        <input asp-for="telefono" class="form-control" placeholder="(555) 123-4567" />
+                                        <span asp-validation-for="telefono" class="text-danger"></span>
                                     </div>
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label">Mensaje *</label>
-                                    <textarea class="form-control" rows="5" placeholder="Por favor proporciona detalles sobre tu consulta..." required></textarea>
+                                    <label asp-for="mensaje" class="form-label">Mensaje *</label>
+                                    <textarea asp-for="mensaje" class="form-control" rows="5" placeholder="Por favor proporciona detalles sobre tu consulta..." required></textarea>
+                                    <span asp-validation-for="mensaje" class="text-danger"></span>
                                 </div>
-                                <button type="submit" class="btn btn-primary-custom d-flex align-items-center justify-content-center  w-100">Enviar Mensaje</button>
+                                <button type="submit" class="btn btn-primary-custom w-100 d-flex justify-content-center align-items-center">Enviar Mensaje</button>
                             </form>
                         </div>
                     </div>

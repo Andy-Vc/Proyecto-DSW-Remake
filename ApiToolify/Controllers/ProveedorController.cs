@@ -37,10 +37,21 @@ namespace ApiToolify.Controllers
         }
 
         [HttpPost]
-        public IActionResult registrarProveedor(Proveedor proveedor) {
-            var provedorGuardado = proveData.Registrar("registrar", proveedor);
-            return Ok(provedorGuardado);
+        public IActionResult registrarProveedor(Proveedor proveedor)
+        {
+            var proveedorGuardado = proveData.Registrar("registrar", proveedor);
+
+            if (proveedorGuardado == null)
+            {
+                return Conflict(new
+                {
+                    codigo = "RUC_EXISTENTE",
+                    mensaje = "El RUC ya está registrado en el sistema."
+                });
+            }
+            return Ok(proveedorGuardado);
         }
+
 
         [HttpPut]
         [Route("{id}")]

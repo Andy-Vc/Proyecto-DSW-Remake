@@ -74,6 +74,10 @@ builder.Services.AddHttpClient<IGraficoService, GraficoService>(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["Services:URL_API"]);
 });
+builder.Services.AddHttpClient<IMensajeService, MensajeService>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["Services:URL_API"]);
+});
 var app = builder.Build();
 
 // 👇 Middlewares de ejecución

@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Content Remove="wwwroot\js\HistorialVendedor.js" />
-    <Content Remove="wwwroot\js\InicioVendedor.js" />
     <Content Remove="wwwroot\js\VentasVendedor.js" />
   </ItemGroup>
 
@@ -24,7 +23,6 @@
     <TypeScriptCompile Include="wwwroot\js\VentasVendedor.js">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="wwwroot\js\InicioVendedor.js" />
   </ItemGroup>
 
   <ItemGroup>

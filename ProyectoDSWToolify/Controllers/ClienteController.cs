@@ -18,12 +18,14 @@
             private readonly IClienteService _clienteService;
             private readonly IVentaService _ventaService;
             private readonly ICategoriaService _categoriaService;
+            private readonly IMensajeService mensajeService;
 
-            public ClienteController(IClienteService clienteService, IVentaService ventaService, ICategoriaService categoriaService)
+            public ClienteController(IClienteService clienteService, IVentaService ventaService, ICategoriaService categoriaService, IMensajeService mensajeService)
             {
                 _clienteService = clienteService;
                 _ventaService = ventaService;
                 _categoriaService = categoriaService;
+                this.mensajeService = mensajeService;
             }
 
             public async Task<IActionResult> Index()
@@ -112,8 +114,65 @@
 
             public IActionResult Contacto()
             {
-                return View();
+                var model = new ContactoMensaje();
+                var usuarioJson = HttpContext.Session.GetString("usuario");
+                if (!string.IsNullOrEmpty(usuarioJson))
+                {
+                    var usuario = JsonSerializer.Deserialize<Usuario>(usuarioJson);
+
+                    model.nombre = usuario.nombre;
+                    model.email = usuario.correo;
+                    model.telefono = usuario.telefono; 
+                    model.idUser = usuario.idUsuario;
+                }
+
+                return View(model);
             }
+
+            [HttpPost]
+            public async Task<IActionResult> ContactoPost()
+            {
+                var nombre = HttpContext.Request.Form["nombre"];
+                var email = HttpContext.Request.Form["email"];
+                var telefono = HttpContext.Request.Form["telefono"];
+                var mensajeTexto = HttpContext.Request.Form["mensaje"];
+                if (string.IsNullOrEmpty(nombre) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(mensajeTexto))
+                {
+                    TempData["ErrorMessage"] = "Faltan campos obligatorios.";
+                    return RedirectToAction("Contacto");
+                }
+                var usuarioJson = HttpContext.Session.GetString("usuario");
+                if (string.IsNullOrEmpty(usuarioJson))
+                {
+                    TempData["ErrorMessage"] = "Debes iniciar sesión para enviar un mensaje.";
+                    return RedirectToAction("Login", "UserAuth");
+                }
+                var usuario = JsonSerializer.Deserialize<Usuario>(usuarioJson);
+                var mensaje = new ContactoMensaje
+                {
+                    nombre = nombre,
+                    email = email,
+                    telefono = telefono,
+                    mensaje = mensajeTexto,
+                    idUser = usuario.idUsuario,
+                    fechaEnvio = DateTime.UtcNow 
+                };
+
+                try
+                {
+                    await mensajeService.InsertarMensajeAsync(mensaje);
+                    TempData["GoodMessage"] = "Mensaje enviado correctamente.";
+                }
+                catch (HttpRequestException ex)
+                {
+                    // Log the exception details for debugging
+                    Console.WriteLine($"Error al insertar mensaje: {ex.Message}");
+                    TempData["ErrorMessage"] = "Ocurrió un error al enviar el mensaje. Por favor, inténtelo de nuevo.";
+                }
+
+                return RedirectToAction("Contacto");
+            }
+
             [HttpGet]
             public async Task<IActionResult> Perfil()
             {

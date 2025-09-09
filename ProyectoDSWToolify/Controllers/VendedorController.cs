@@ -24,36 +24,6 @@ namespace ProyectoDSWToolify.Controllers
         }
 
         #region
-
-        [HttpGet]
-        public async Task<IActionResult> DatosMensuales()
-        {
-            var fechaActual = DateTime.Now.ToString("yyyy-MM");
-
-            var metricas = new
-            {
-                ventasMensuales = await _reporteService.ContarVentasPorMesAsync(fechaActual),
-                productosMensuales = await _reporteService.ContarProductosVendidosPorMesAsync(fechaActual),
-                clientesMensuales = await _reporteService.ContarClientesAtendidosPorMesAsync(fechaActual),
-                ingresosMensuales = await _reporteService.ObtenerIngresosTotalesAsync()
-            };
-
-            return Json(metricas);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> DatosTotales()
-        {
-            var metricas = new
-            {
-                totalProductosVendidos = await _reporteService.ObtenerTotalProductosVendidosAsync(),
-                totalVentas = await _reporteService.ObtenerTotalVentasAsync(),
-                ingresosTotales = await _reporteService.ObtenerIngresosTotalesAsync()
-            };
-
-            return Json(metricas);
-        }
-
         public async Task<IActionResult> DescargarVentaPdf(int idUsuario, int idVenta)
         {
             try
@@ -63,7 +33,6 @@ namespace ProyectoDSWToolify.Controllers
             }
             catch (Exception ex)
             {
-                // Maneja error (por ejemplo, mostrar mensaje)
                 return NotFound(ex.Message);
             }
         }
@@ -92,7 +61,6 @@ namespace ProyectoDSWToolify.Controllers
                 return NotFound(ex.Message);
             }
         }
-
         [HttpPost]
         public async Task<IActionResult> GenerarVentaVendedor([FromBody] VentaViewModel v)
         {
@@ -107,19 +75,34 @@ namespace ProyectoDSWToolify.Controllers
             }
         }
         #endregion
-
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            
             var usuarioJson = HttpContext.Session.GetString("usuario");
             if (string.IsNullOrEmpty(usuarioJson))
             {
                 TempData["ErrorMessage"] = "Necesitas iniciar sesión para acceder a tu perfil.";
                 return RedirectToAction("Login", "UserAuth");
             }
-            
-            return View();
-            
+
+            var usuario = System.Text.Json.JsonSerializer.Deserialize<Usuario>(usuarioJson);
+
+            var fechaActual = DateTime.Now.ToString("yyyy-MM");
+
+            var viewModel = new VendedorPerfilViewModel
+            {
+                Nombre = usuario.nombre,
+                Correo = usuario.correo,
+                InicialNombre = usuario.nombre.Substring(0, 1).ToUpper(),
+                VentasMensuales = await _reporteService.ContarVentasPorMesAsync(fechaActual),
+                ProductosMensuales = await _reporteService.ContarProductosVendidosPorMesAsync(fechaActual),
+                ClientesMensuales = await _reporteService.ContarClientesAtendidosPorMesAsync(fechaActual),
+                IngresosMensuales = await _reporteService.ObtenerIngresosTotalesAsync(),
+
+                FechaCompleta = DateTime.Now.ToString("dddd, dd MMMM yyyy", new System.Globalization.CultureInfo("es-ES")),
+                FechaCorta = DateTime.Now.ToString("dd/MM/yyyy")
+            };
+
+            return View(viewModel);
         }
 
         public IActionResult Ventas()
@@ -164,11 +147,6 @@ namespace ProyectoDSWToolify.Controllers
             };
 
             return View(listado);
-        }
-
-        public IActionResult Pedidos()
-        {
-            return View();
         }
     }
 }

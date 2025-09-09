@@ -52,7 +52,7 @@
 }
 
 .bg-color-primary {
-    background-color: var(--color-primary);
+    background-color: var(--color-primary) !important;
 }
 
 .bg-gray-900 {
@@ -124,7 +124,20 @@
     .btn-icon.btn-outline-danger:hover {
         background-color: rgba(220, 53, 69, 0.1);
     }
-
+.btn-outline-primary-custom-v2 {
+    background-color: transparent;
+    border-color: #576EAA;
+    border-radius: 0.375rem;
+    color: #576EAA;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+    .btn-outline-primary-custom-v2:hover,
+    .btn-outline-primary-custom-v2:focus {
+        background-color: #576EAA;
+        border-color: #576EAA;
+        box-shadow: 0 0 8px rgba(87, 110, 170, 0.5);
+        color: white;
+    }
 .btn-outline-primary-custom {
     background-color: transparent;
     border-color: #576EAA;
@@ -136,7 +149,7 @@
     padding: 1.2rem 2rem !important;
     transition: background-color 0.2s ease, color 0.2s ease;
 }
-
+    
     .btn-outline-primary-custom:hover,
     .btn-outline-primary-custom:focus {
         background-color: #576EAA;

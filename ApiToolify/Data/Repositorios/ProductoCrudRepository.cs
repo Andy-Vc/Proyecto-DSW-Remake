@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using System.Globalization;
+using Microsoft.Data.SqlClient;
 using ProyectoDSWToolify.Data.Contratos;
 using ProyectoDSWToolify.Models;
 
@@ -148,10 +149,9 @@ namespace ProyectoDSWToolify.Data.Repositorios
             }
             return prodEncontrado;  
         }
-
         public Producto Registrar(string tipo, Producto producto)
         {
-            Producto prodGuardodo = new Producto(); 
+            Producto prodGuardado = new Producto();
             int idRegistrado;
             using (SqlConnection cn = new SqlConnection(cadenaConexion))
             {
@@ -159,21 +159,32 @@ namespace ProyectoDSWToolify.Data.Repositorios
                 using (SqlCommand cm = new SqlCommand("crudProductos", cn))
                 {
                     cm.CommandType = System.Data.CommandType.StoredProcedure;
+                    string nombreCapitalizado = CapitalizarCadaPalabra(producto.nombre);
+
                     cm.Parameters.AddWithValue("@tipo", tipo);
-                    cm.Parameters.AddWithValue("@nombre", producto.nombre);
+                    cm.Parameters.AddWithValue("@nombre", nombreCapitalizado);
                     cm.Parameters.AddWithValue("@descripcion", producto.descripcion);
                     cm.Parameters.AddWithValue("@idProveedor", producto.proveedor.idProveedor);
                     cm.Parameters.AddWithValue("@idCategoria", producto.categoria.idCategoria);
                     cm.Parameters.AddWithValue("@precio", producto.precio);
                     cm.Parameters.AddWithValue("@stock", producto.stock);
-                    cm.Parameters.AddWithValue("@imagen", producto.imagen);                  
+                    cm.Parameters.AddWithValue("@imagen", producto.imagen);
 
                     idRegistrado = Convert.ToInt32(cm.ExecuteScalar());
                 }
             }
-            prodGuardodo = ObtenerId("detalle",idRegistrado);
+            prodGuardado = ObtenerId("detalle", idRegistrado);
 
-            return prodGuardodo;
+            return prodGuardado;
+        }
+
+        /* Metodo privado */
+        private string CapitalizarCadaPalabra(string texto)
+        {
+            if (string.IsNullOrWhiteSpace(texto))
+                return texto;
+
+            return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(texto.ToLower());
         }
     }
 }

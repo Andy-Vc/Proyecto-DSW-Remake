@@ -53,10 +53,29 @@ namespace ProyectoDSWToolify.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Proveedor proveedor)
         {
-            var proveedorGuardado = await proveedorService.RegistrarProveedor(proveedor);
-            TempData["GoodMessage"] = $"Se registró a {proveedorGuardado.razonSocial} con código: {proveedorGuardado.idProveedor}";
-            return RedirectToAction("Index");
+            try
+            {
+                var proveedorGuardado = await proveedorService.RegistrarProveedor(proveedor);
+
+                TempData["GoodMessage"] = $"Se registró a {proveedorGuardado.razonSocial} con código: {proveedorGuardado.idProveedor}";
+                return RedirectToAction("Index");
+            }
+            catch (ApplicationException ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                var distritos = await distritoService.obtenerListaDistritos();
+                ViewBag.Distritos = new SelectList(distritos, "idDistrito", "nombre");
+                return View(proveedor);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Ocurrió un error inesperado al registrar el proveedor.";
+                var distritos = await distritoService.obtenerListaDistritos();
+                ViewBag.Distritos = new SelectList(distritos, "idDistrito", "nombre");
+                return View(proveedor);
+            }
         }
+
 
         [HttpGet]
         public async Task<IActionResult> Actualizar(int id = 0)

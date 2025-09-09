@@ -57,13 +57,21 @@ namespace ProyectoDSWToolify.Data.Repositorios
 
         public Proveedor Registrar(string tipo, Proveedor proveedor)
         {
+            if (RucExiste(proveedor.ruc))
+            {
+                return null;
+            }
+
             Proveedor proveGuardado = new Proveedor();
             int idRegistrado = 0;
-            using (SqlConnection cn = new SqlConnection(cadenaConexion)) {
+
+            using (SqlConnection cn = new SqlConnection(cadenaConexion))
+            {
                 cn.Open();
-                using (SqlCommand cm = new SqlCommand("crudProveedores", cn)) {
+                using (SqlCommand cm = new SqlCommand("crudProveedores", cn))
+                {
                     cm.CommandType = System.Data.CommandType.StoredProcedure;
-                    cm.Parameters.AddWithValue("@tipo",tipo);
+                    cm.Parameters.AddWithValue("@tipo", tipo);
                     cm.Parameters.AddWithValue("@ruc", proveedor.ruc);
                     cm.Parameters.AddWithValue("@razon", proveedor.razonSocial);
                     cm.Parameters.AddWithValue("@telefono", proveedor.telefono);
@@ -72,14 +80,11 @@ namespace ProyectoDSWToolify.Data.Repositorios
 
                     idRegistrado = Convert.ToInt32(cm.ExecuteScalar());
                 }
-
-              
-
             }
-            proveGuardado = ObtenerId("detalle",idRegistrado);
-
+            proveGuardado = ObtenerId("detalle", idRegistrado);
             return proveGuardado;
         }
+
         public Proveedor Actualizar(string tipo, Proveedor proveedor)
         {
             Proveedor actualizado = new Proveedor();
@@ -158,6 +163,20 @@ namespace ProyectoDSWToolify.Data.Repositorios
             return provEncotrado;                
         }
 
+        /*Validaciones*/
+        public bool RucExiste(string ruc)
+        {
+            using (SqlConnection cn = new SqlConnection(cadenaConexion))
+            {
+                cn.Open();
+                using (SqlCommand cm = new SqlCommand("SELECT COUNT(1) FROM TB_PROVEEDOR WHERE RUC = @ruc", cn))
+                {
+                    cm.Parameters.AddWithValue("@ruc", ruc);
+                    int count = Convert.ToInt32(cm.ExecuteScalar());
+                    return count > 0;
+                }
+            }
+        }
 
     }
 }

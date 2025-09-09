@@ -1,5 +1,4 @@
-﻿
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="utf-8" />
@@ -26,16 +25,15 @@
         <h2 class="fw-bold">Toolify</h2>
         <div class="d-flex align-items-center">
             <span class="me-3">
-                <i class="fa fa-user me-1" aria-hidden="true"></i>
+                <i class="fa fa-user me-1"></i>
                 @User.Identity.Name @User.FindFirst("Apellido")?.Value
             </span>
             <form asp-controller="UserAuth" asp-action="Logout" method="post" class="d-inline">
                 <button class="btn btn-outline-light">
-                    <i class="fa fa-sign-out-alt me-1" aria-hidden="true"></i> Salir
+                    <i class="fa fa-sign-out-alt me-1"></i> Salir
                 </button>
             </form>
         </div>
-
     </div>
 
     <!-- Sidebar -->
@@ -43,27 +41,44 @@
         <ul class="nav flex-column">
             <li class="nav-item">
                 <a asp-controller="Admin" asp-action="Dashboard" class="nav-link">
-                    <i class="bi bi-speedometer2"></i> Dashboard
+                    <i class="fa fa-tachometer-alt me-2"></i> Dashboard
                 </a>
             </li>
+
             <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="collapse" href="#listadosMenu">
-                    <i class="bi bi-card-list"></i> Listados
+                <a asp-controller="Proveedor" asp-action="Index" class="nav-link">
+                    <i class="fa fa-truck me-2"></i> Proveedores
                 </a>
-                <div class="collapse ps-3" id="listadosMenu">
-                    <a asp-controller="Proveedor" asp-action="Index" class="nav-link">Proveedores</a>
-                    <a asp-controller="Producto" asp-action="Index" class="nav-link">Productos</a>
-                    <a asp-controller="Admin" asp-action="Categoria" class="nav-link">Categorias</a>
-                </div>
             </li>
+
             <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="collapse" href="#reportesMenu">
-                    <i class="bi bi-bar-chart"></i> Reportes
+                <a asp-controller="Producto" asp-action="Index" class="nav-link">
+                    <i class="fa fa-boxes me-2"></i> Productos
                 </a>
-                <div class="collapse ps-3" id="reportesMenu">
-                    <a asp-controller="Admin" asp-action="ReporteVenta" class="nav-link">Reporte Venta</a>
-                    <a asp-controller="Admin" asp-action="ReporteProducto" class="nav-link">Reporte Producto</a>
-                </div>
+            </li>
+
+            <li class="nav-item">
+                <a asp-controller="Admin" asp-action="Categoria" class="nav-link">
+                    <i class="fa fa-tags me-2"></i> Categorías
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a asp-controller="Admin" asp-action="ReporteVenta" class="nav-link">
+                    <i class="fa fa-chart-line me-2"></i> Reporte de Ventas
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a asp-controller="Admin" asp-action="ReporteProducto" class="nav-link">
+                    <i class="fa fa-chart-bar me-2"></i> Reporte de Productos
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a asp-controller="Admin" asp-action="MensajeContacto" class="nav-link">
+                    <i class="fa fa-envelope-open-text me-2"></i> Mensajes
+                </a>
             </li>
         </ul>
     </div>

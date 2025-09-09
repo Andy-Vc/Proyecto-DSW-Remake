@@ -48,8 +48,8 @@ builder.Services.AddScoped<IVenta, VentaRepository>();
 builder.Services.AddScoped<IUserAuth, UserAuthRepository>();
 builder.Services.AddScoped<IGrafico, GraficoRepository>();
 builder.Services.AddScoped<IEstadistica, VendedorEstadisticasRepository>();
-
 builder.Services.AddScoped<IReporte, ReporteRepository>();
+builder.Services.AddScoped<IMensaje, MensajeRepository>();
 
 var app = builder.Build();
 

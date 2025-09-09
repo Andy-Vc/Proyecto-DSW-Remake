@@ -73,10 +73,20 @@ namespace ProyectoDSWToolify.Controllers
             return View(model);
         }
 
-        public IActionResult ListarVentas()
+        public IActionResult ListarVentas(int page = 1, int pageSize = 6)
         {
             var ventas = ventaService.ListarVentasRemotas().Result;
-            return View(ventas);
+
+            int totalVentas = ventas.Count;
+            var pagedVentas = ventas
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalVentas / pageSize);
+
+            return View(pagedVentas);
         }
 
         [HttpPost]

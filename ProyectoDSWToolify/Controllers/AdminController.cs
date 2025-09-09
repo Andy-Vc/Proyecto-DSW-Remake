@@ -21,14 +21,15 @@ namespace ProyectoDSWToolify.Controllers
         private readonly IGraficoService graficoService;
         private readonly IProveedorService proveedorService;
         private readonly IProductoService productoService;
-
-        public AdminController(IAdminService adminService, ICategoriaService categoriaService, IGraficoService graficoService, IProveedorService proveedorService, IProductoService productoService)
+        private readonly IMensajeService mensajeService;
+        public AdminController(IAdminService adminService, ICategoriaService categoriaService, IGraficoService graficoService, IProveedorService proveedorService, IProductoService productoService, IMensajeService mensajeService)
         {
             this.adminService = adminService;
             this.categoriaService = categoriaService;
             this.graficoService = graficoService;
             this.proveedorService = proveedorService;
             this.productoService = productoService;
+            this.mensajeService = mensajeService;
         }
 
         public async Task<IActionResult> Dashboard()
@@ -73,7 +74,6 @@ namespace ProyectoDSWToolify.Controllers
 
             return View(model);
         }
-
         public string obtenerMensajeAleatorio(List<string> mensaje)
         {
             if (mensaje == null || mensaje.Count == 0)
@@ -122,7 +122,6 @@ namespace ProyectoDSWToolify.Controllers
 
             return View(listado.Skip(skip).Take(paginasMax));
         }
-
         public async Task<IActionResult> ReporteProducto(int? idCategoria, string? orden, int pag = 1)
         {
             if (idCategoria == 0)
@@ -159,6 +158,18 @@ namespace ProyectoDSWToolify.Controllers
             var skip = (pag - 1) * paginasMax;
 
             return View(productos.Skip(skip).Take(paginasMax));
+        }
+        public async Task<IActionResult> MensajeContacto()
+        {
+            var list = await mensajeService.ListarMensajesAsync();
+            return View(list);
+        }
+        [HttpPost]
+        public async Task<IActionResult> EliminarMensaje(string id)
+        {
+            await mensajeService.EliminarMensajeAsync(id);
+            TempData["GoodMessage"] = "Mensaje eliminado correctamente.";
+            return RedirectToAction("MensajeContacto");
         }
 
     }

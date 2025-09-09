@@ -8,6 +8,7 @@ begin
 	SELECT pv.ID_PROVEEDOR, pv.RUC, pv.RAZON_SOCIAL, pv.TELEFONO, 
 	pv.DIRECCION, dt.NOMBRE, pv.FECHA_REGISTRO, pv.ESTADO FROM TB_PROVEEDOR pv
 	INNER JOIN TB_DISTRITO dt ON pv.ID_DISTRITO = dt.ID_DISTRITO
+	ORDER BY PV.ID_PROVEEDOR DESC
 end
 go
 
@@ -216,6 +217,7 @@ begin
 	select pr.ID_PRODUCTO, pr.NOMBRE,pr.DESCRIPCION, pv.ID_PROVEEDOR,pv.RAZON_SOCIAL, ct.ID_CATEGORIA,ct.DESCRIPCION,pr.IMAGEN, pr.PRECIO, pr.STOCK,pr.ESTADO from TB_PRODUCTO pr 
 	INNER JOIN TB_CATEGORIA ct ON pr.ID_CATEGORIA = ct.ID_CATEGORIA
 	INNER JOIN TB_PROVEEDOR pv ON pr.ID_PROVEEDOR = pv.ID_PROVEEDOR
+	ORDER BY PR.ID_PRODUCTO DESC
 end
 go
 
@@ -544,7 +546,7 @@ begin
 			DATENAME(MONTH,vt.FECHA)as Mes,
 			count(*) AS Ventas_totales
 			from TB_VENTA vt
-			where DATEPART(YEAR,vt.FECHA) = 2025
+			where DATEPART(YEAR,vt.FECHA) = year(getdate())
 			GROUP BY DATENAME(MONTH, vt.FECHA), DATEPART(MONTH, vt.FECHA)
 			ORDER BY DATEPART(MONTH, vt.FECHA);
 		end
@@ -556,7 +558,7 @@ begin
 				TIPO_VENTA as tipoVenta,
 				COUNT(*) as cantidadVentas
 			from TB_VENTA
-			where datepart(year,FECHA) = 2025
+			where datepart(year, FECHA) = year(getdate())
 			group by DATENAME(MONTH,FECHA),TIPO_VENTA,DATEPART(MONTH,FECHA)
 			order by DATEPART(MONTH,FECHA) 
 		end

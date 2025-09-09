@@ -16,12 +16,12 @@
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label asp-for="ruc" class="form-label">Ruc</label>
-                        <input asp-for="ruc" class="form-control" />
+                        <input asp-for="ruc" class="form-control" required />
                         <span asp-validation-for="ruc" class="text-danger"></span>
                     </div>
                     <div class="col-md-6">
                         <label asp-for="razonSocial" class="form-label">Razon Social</label>
-                        <input asp-for="razonSocial" class="form-control" />
+                        <input asp-for="razonSocial" class="form-control" required/>
                         <span asp-validation-for="razonSocial" class="text-danger"></span>
                     </div>
                 </div>
@@ -29,12 +29,12 @@
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label asp-for="telefono" class="form-label">Telefono</label>
-                        <input asp-for="telefono" class="form-control" />
+                        <input asp-for="telefono" class="form-control" required />
                         <span asp-validation-for="telefono" class="text-danger"></span>
                     </div>
                     <div class="col-md-6">
                         <label asp-for="direccion" class="form-label">Direccion</label>
-                        <input asp-for="direccion" class="form-control" />
+                        <input asp-for="direccion" class="form-control" required />
                         <span asp-validation-for="direccion" class="text-danger"></span>
                     </div>
                 </div>

@@ -1,161 +1,119 @@
-﻿
+﻿@model ProyectoDSWToolify.Models.ViewModels.VendedorVM.VendedorPerfilViewModel
+
 @{
-	ViewData["Title"] = "Inicio";
-	Layout = "~/Views/Shared/_LayoutVendedor.cshtml";
+    ViewData["Title"] = "Inicio";
+    Layout = "~/Views/Shared/_LayoutVendedor.cshtml";
 }
 
-<div class="container-xl mx-auto">
-	<div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-lg-between gap-3">
-		<div>
-			<h1 class="fs-2 fw-bold text-dark mt-4">¡Bienvenido, @User.Identity.Name! 👋</h1>
-			<p class="text-secondary mt-1" id="fechaCompleta"></p>
-		</div>
-		<div class="d-flex align-items-center gap-2 text-secondary">
-			<i class="bi bi-calendar3 fs-5"></i>
-			<span class="small" id="fechaCorta"></span>
-		</div>
-	</div>
+<div class="container-xl py-4">
+    <header class="d-flex flex-column flex-lg-row align-items-start align-items-lg-center justify-content-lg-between gap-3 mb-5">
+        <div>
+            <h1 class="fs-2 fw-bold text-dark">
+                ¡Bienvenido de nuevo, <span class="text-primary-custom">@Model.Nombre</span>!
+                <i class="fas fa-star text-primary-custom ms-2"></i>
+            </h1>
+            <p class="text-secondary mt-1 mb-0 fs-5">Aquí tienes un resumen rápido de tu actividad reciente.</p>
+        </div>
+        <div class="d-flex align-items-center gap-2 text-secondary fs-5">
+            <i class="fas fa-calendar-alt"></i>
+            <span>@Model.FechaCompleta</span>
+        </div>
+    </header>
 
-	<!-- Cards usuario y empresa -->
-	<div class="row row-cols-1 row-cols-lg-2 g-4 mt-3">
-		<!-- Perfil -->
-		<div class="col">
-			<div class="card shadow-sm rounded-4 border h-100 position-relative hover-darken">
-				<div class="card-body d-flex flex-column gap-2">
-					<div class="d-flex align-items-center gap-2 fw-semibold fs-6">
-						<i class="bi bi-camera"></i> Mi Perfil
-					</div>
-					<small class="text-muted">Personaliza tu foto de perfil</small>
+    <section class="row g-4 mb-5">
+        <div class="col-12 col-lg-5">
+            <div class="card h-100 shadow-sm rounded-4 border border-primary">
+                <div class="card-body p-4 d-flex flex-column justify-content-center">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="profile-initials bg-color-primary text-white rounded-circle d-flex justify-content-center align-items-center fs-3 fw-bold" style="width:60px; height:60px;">
+                            @Model.InicialNombre
+                        </div>
+                        <div class="flex-grow-1">
+                            <h5 class="mb-0 fw-bold text-dark">@Model.Nombre</h5>
+                            <p class="text-muted mb-0"><i class="fas fa-envelope me-2"></i>@Model.Correo</p>
+                        </div>
+                    </div>
+                    <hr class="my-4" />
+                    <h6 class="text-primary-custom fw-semibold">Información del Vendedor</h6>
+                    <p class="text-secondary">Mantén tu perfil actualizado para mejorar la comunicación con tus clientes.</p>
+                </div>
+            </div>
+        </div>
 
-					<div class="d-flex align-items-center gap-3 mt-3">
-						<!-- Inicial usuario -->
-						<div id="inicialUsuario"
-							 class="rounded-circle bg-secondary text-white d-flex justify-content-center align-items-center"
-							 style="width:80px; height:80px; font-size: 1.5rem;">
-						</div>
-						<!-- Imagen usuario -->
-						<img id="fotoUsuario" class="rounded-circle d-none"
-							 style="width:80px; height:80px; object-fit:cover;" />
+        <div class="col-12 col-lg-7">
+            <div class="card h-100 shadow-sm rounded-4 border border-primary">
+                <div class="card-body p-4">
+                    <h5 class="fw-semibold mb-3 text-primary-custom"><i class="fas fa-bolt me-2"></i>Acciones Rápidas</h5>
+                    <small class="text-muted d-block mb-4">Accede a las funciones principales con un solo clic.</small>
+                    <div class="d-flex gap-4 flex-wrap">
+                        <a asp-controller="Vendedor" asp-action="Ventas" class="quick-action-link text-decoration-none text-center p-3 rounded-3 border border-primary shadow-sm hover-shadow" style="flex: 1 1 150px;">
+                            <i class="fas fa-cart-plus fs-1 text-primary-custom mb-2"></i>
+                            <div class="fw-medium text-dark fs-5">Nueva Venta</div>
+                            <small class="text-muted">Registrar una transacción</small>
+                        </a>
+                        <a asp-controller="Vendedor" asp-action="Historial" class="quick-action-link text-decoration-none text-center p-3 rounded-3 border border-primary shadow-sm hover-shadow" style="flex: 1 1 150px;">
+                            <i class="fas fa-history fs-1 text-primary-custom mb-2"></i>
+                            <div class="fw-medium text-dark fs-5">Ver Historial</div>
+                            <small class="text-muted">Revisar ventas anteriores</small>
+                        </a>
+                        <a asp-controller="Vendedor" asp-action="Clientes" class="quick-action-link text-decoration-none text-center p-3 rounded-3 border border-primary shadow-sm hover-shadow" style="flex: 1 1 150px;">
+                            <i class="fas fa-users fs-1 text-primary-custom mb-2"></i>
+                            <div class="fw-medium text-dark fs-5">Gestionar Clientes</div>
+                            <small class="text-muted">Ver y administrar clientes</small>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-						<div class="flex-grow-1">
-							<h5 class="mb-0" id="nombreUsuario">@User.Identity.Name</h5>
-							<p class="text-secondary mb-2" id="correoUsuario"></p>
+    <section>
+        <h4 class="mb-4 fw-bold text-primary-custom">Resumen Mensual</h4>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            <div class="col">
+                <div class="card h-100 shadow-sm rounded-4 border border-success hover-shadow">
+                    <div class="card-body d-flex justify-content-between align-items-center p-4">
+                        <div>
+                            <p class="text-success fw-semibold small mb-1"><i class="fas fa-chart-line me-1"></i>Ventas del Mes</p>
+                            <p class="fs-3 fw-bold mb-1 text-dark">@Model.VentasMensuales</p>
+                            <p class="small text-muted mb-0">S/ @Model.IngresosMensuales.ToString("N2")</p>
+                        </div>
+                        <div class="icon-container-success fs-2 text-success">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-							<button type="button" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1 px-3"
-									onclick="document.getElementById('inputFoto').click()">
-								<i class="bi bi-upload"></i> Cambiar Foto
-							</button>
-							<input type="file" accept="image/*" class="d-none" id="inputFoto">
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
+            <div class="col">
+                <div class="card h-100 shadow-sm rounded-4 border border-primary hover-shadow">
+                    <div class="card-body d-flex justify-content-between align-items-center p-4">
+                        <div>
+                            <p class="text-primary-custom fw-semibold small mb-1"><i class="fas fa-boxes me-1"></i>Productos Vendidos</p>
+                            <p class="fs-3 fw-bold mb-1 text-dark">@Model.ProductosMensuales</p>
+                            <p class="small text-muted mb-0">Unidades este mes</p>
+                        </div>
+                        <div class="icon-container-primary fs-2 text-primary-custom">
+                            <i class="fas fa-box"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-		<!-- Logo Empresa -->
-		<div class="col">
-			<div class="card shadow-sm rounded-4 border h-100 hover-darken">
-				<div class="card-body d-flex flex-column gap-2">
-					<div class="d-flex align-items-center gap-2 fw-semibold fs-6">
-						<i class="bi bi-tools"></i> Logo de Empresa
-					</div>
-					<small class="text-muted">Agrega el logo de tu empresa o personalización</small>
-
-					<div class="d-flex flex-column align-items-center justify-content-center border border-2 border-dashed rounded-3 py-5 mt-3 text-center text-secondary">
-						<i class="bi bi-tools fs-1 mb-2"></i>
-						<p class="mb-0 small">Sin logo personalizado</p>
-					</div>
-					<button type="button"
-							class="btn btn-outline-secondary btn-sm mt-3 w-100 d-flex align-items-center justify-content-center gap-1">
-						<i class="bi bi-upload"></i> Subir Logo
-					</button>
-					<input type="file" accept="image/*" class="d-none">
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- Mini dashboard -->
-	<div class="row row-cols-1 row-cols-md-3 g-4 mt-4">
-		<div class="col">
-			<div class="card shadow-sm rounded-4 border h-100 hover-darken">
-				<div class="card-body d-flex justify-content-between align-items-center">
-					<div>
-						<p class="text-secondary fw-medium small mb-1">Ventas del Mes</p>
-						<p class="fs-3 fw-bold mb-1 text-dark" id="ventasMensual">0</p>
-						<p class="small text-muted mb-0">S/ <span id="ingresosMensuales">0</span></p>
-					</div>
-					<div class="p-3 rounded-circle" style="background-color: rgb(169, 229, 187);">
-						<i class="bi bi-graph-up text-success fs-4"></i>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<div class="col">
-			<div class="card shadow-sm rounded-4 border h-100 hover-darken">
-				<div class="card-body d-flex justify-content-between align-items-center">
-					<div>
-						<p class="text-secondary fw-medium small mb-1">Productos Vendidos</p>
-						<p class="fs-3 fw-bold mb-1 text-dark" id="prodsVendidosMensual">0</p>
-						<p class="small text-muted mb-0">Unidades este mes</p>
-					</div>
-					<div class="p-3 rounded-circle" style="background-color: rgb(53, 86, 145);">
-						<i class="bi bi-box text-white fs-4"></i>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<div class="col">
-			<div class="card shadow-sm rounded-4 border h-100 hover-darken">
-				<div class="card-body d-flex justify-content-between align-items-center">
-					<div>
-						<p class="text-secondary fw-medium small mb-1">Clientes Atendidos</p>
-						<p class="fs-3 fw-bold mb-1 text-dark" id="clisAtendidosMensual">0</p>
-						<p class="small text-muted mb-0">Clientes únicos</p>
-					</div>
-					<div class="p-3 rounded-circle" style="background-color: rgb(252, 246, 177);">
-						<i class="bi bi-people text-warning fs-4"></i>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- Acciones rápidas -->
-	<div class="card shadow-sm rounded-4 border mt-4">
-		<div class="card-body">
-			<h5 class="fw-semibold mb-1">Acciones Rápidas</h5>
-			<small class="text-muted">Accede rápidamente a las funciones principales</small>
-			<div class="d-flex justify-content-between gap-3 mt-3 flex-wrap">
-				<a asp-controller="Vendedor" asp-action="Ventas" class="accion-minimalista d-flex flex-column align-items-center gap-2 p-4 flex-fill">
-					<i class="bi bi-cart-plus fs-1"></i>
-					<div class="text-center">
-						<div class="fw-medium">Nueva Venta</div>
-						<small>Registrar nueva transacción</small>
-					</div>
-				</a>
-				<a asp-controller="Vendedor" asp-action="Historial" class="accion-minimalista d-flex flex-column align-items-center gap-2 p-4 flex-fill">
-					<i class="bi bi-clock-history fs-1"></i>
-					<div class="text-center">
-						<div class="fw-medium">Ver Historial</div>
-						<small>Revisar ventas anteriores</small>
-					</div>
-				</a>
-				<a asp-controller="Vendedor" asp-action="Pedidos" class="accion-minimalista d-flex flex-column align-items-center gap-2 p-4 flex-fill">
-					<i class="bi bi-box fs-1"></i>
-					<div class="text-center">
-						<div class="fw-medium">Mis Pedidos</div>
-						<small>Gestionar pedidos</small>
-					</div>
-				</a>
-			</div>
-		</div>
-	</div>
-
+            <div class="col">
+                <div class="card h-100 shadow-sm rounded-4 border border-warning hover-shadow">
+                    <div class="card-body d-flex justify-content-between align-items-center p-4">
+                        <div>
+                            <p class="text-warning fw-semibold small mb-1"><i class="fas fa-user-check me-1"></i>Clientes Atendidos</p>
+                            <p class="fs-3 fw-bold mb-1 text-dark">@Model.ClientesMensuales</p>
+                            <p class="small text-muted mb-0">Clientes únicos</p>
+                        </div>
+                        <div class="icon-container-warning fs-2 text-warning">
+                            <i class="fas fa-users"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 </div>
-
-@section Scripts {
-	<script src="~/js/InicioVendedor.js"></script>
-}

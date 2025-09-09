@@ -2,6 +2,8 @@
 using ProyectoDSWToolify.Services.Contratos;
 using Newtonsoft.Json;
 using System.Text;
+using Newtonsoft.Json.Linq;
+using System.Net;
 
 namespace ProyectoDSWToolify.Services.Implementacion
 {
@@ -44,8 +46,6 @@ namespace ProyectoDSWToolify.Services.Implementacion
 
         public async Task<Proveedor> RegistrarProveedor(Proveedor proveedor)
         {
-            Proveedor proveedorGuardado = null;
-
             var contenidoJson = new StringContent(
                 JsonConvert.SerializeObject(proveedor),
                 Encoding.UTF8,
@@ -57,10 +57,29 @@ namespace ProyectoDSWToolify.Services.Implementacion
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
-                proveedorGuardado = JsonConvert.DeserializeObject<Proveedor>(data);
+                return JsonConvert.DeserializeObject<Proveedor>(data);
             }
+            else if (response.StatusCode == HttpStatusCode.Conflict)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                string mensaje;
+                try
+                {
+                    var json = JObject.Parse(errorContent);
+                    mensaje = json["mensaje"]?.ToString() ?? "Conflicto al registrar proveedor.";
+                }
+                catch
+                {
+                    mensaje = errorContent;
+                }
 
-            return proveedorGuardado;
+                throw new ApplicationException(mensaje);
+            }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                throw new ApplicationException($"Error al registrar proveedor: {response.StatusCode} - {errorContent}");
+            }
         }
 
         public async Task<Proveedor> actualizarProveedor(Proveedor proveedor)

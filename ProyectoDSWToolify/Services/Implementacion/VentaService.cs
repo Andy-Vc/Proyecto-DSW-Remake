@@ -4,6 +4,7 @@ using ProyectoDSWToolify.Services.Contratos;
 using ProyectoDSWToolify.Models;
 using ProyectoDSWToolify.Models.ViewModels;
 using ProyectoDSWToolify.Models.ViewModels.ClienteVM;
+using Newtonsoft.Json.Linq;
 
 namespace ProyectoDSWToolify.Services.Implementacion
 {
@@ -145,9 +146,10 @@ namespace ProyectoDSWToolify.Services.Implementacion
             if (response.IsSuccessStatusCode)
             {
                 var responseJson = await response.Content.ReadAsStringAsync();
-                var respuestaApi = JsonConvert.DeserializeObject<RespuestaVentaApi>(responseJson);
+                var jObj = JObject.Parse(responseJson);
+                int idVenta = (int)jObj["idVenta"];
 
-                return new VentaViewModel { idVenta = respuestaApi.idVenta };
+                return new VentaViewModel { idVenta = idVenta };
             }
             else
             {

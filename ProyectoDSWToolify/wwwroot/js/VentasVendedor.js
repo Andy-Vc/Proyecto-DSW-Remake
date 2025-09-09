@@ -12,18 +12,21 @@
     const countSeleccionados = document.getElementById("countSeleccionados");
     const countCarrito = document.getElementById("countCarrito");
     const alertPlaceholder = document.getElementById("alert-placeholder");
+    const paginacion = document.getElementById("paginacionProductos");
 
     const userIdElement = document.getElementById("currentUserId");
     const idUsuario = userIdElement ? parseInt(userIdElement.value, 10) : 0;
     const inputBusqueda = document.getElementById("txtBusqueda");
 
+    const productosPorPagina = 8;
+    let paginaActual = 1;
+    let productosFiltrados = [];
+
     if (idUsuario === 0) {
-        console.error("No se pudo obtener el ID del usuario. Asegúrate de que el campo oculto existe y tiene un valor válido.");
+        console.error("No se pudo obtener el ID del usuario.");
     }
 
-    console.log(idUsuario);
-
-    function mostrarMensaje(mensaje, tipo) {
+    function mostrarMensaje(mensaje, tipo = "info") {
         if (!alertPlaceholder) return;
         alertPlaceholder.innerHTML = `
             <div class="alert alert-${tipo} alert-dismissible fade show" role="alert">
@@ -32,45 +35,288 @@
             </div>
         `;
         setTimeout(() => {
-            if (alertPlaceholder.firstChild) {
-                alertPlaceholder.removeChild(alertPlaceholder.firstChild);
-            }
+            alertPlaceholder.innerHTML = "";
         }, 5000);
     }
 
-    //fetch al controller pa cargar Lstproductos
     async function cargarProductos() {
         try {
             const resp = await fetch(apiUrl);
-            if (!resp.ok) {
-                const error = await resp.text();
-                throw new Error(`Error del servidor: ${resp.status} - ${error}`);
-            }
+            if (!resp.ok) throw new Error(`${resp.status} - ${await resp.text()}`);
             productos = await resp.json();
-            renderProductos();
+            productosFiltrados = productos;
+            renderProductos(productosFiltrados, 1);
         } catch (err) {
-            console.error("Error al cargar productos", err);
-            mostrarMensaje("Error al cargar productos. Por favor, intenta de nuevo más tarde.", "danger");
+            console.error(err);
+            mostrarMensaje("Error al cargar productos. Intente de nuevo más tarde.", "danger");
         }
     }
 
-    // Nueva función para filtrar los productos de forma dinámica
     function filtrarProductos() {
         const textoBusqueda = inputBusqueda.value.toLowerCase();
-        const productosFiltrados = productos.filter(producto =>
-            producto.nombre.toLowerCase().includes(textoBusqueda) ||
-            producto.categoria.descripcion.toLowerCase().includes(textoBusqueda) ||
-            String(producto.idProducto).includes(textoBusqueda)
+        productosFiltrados = productos.filter(p =>
+            p.nombre.toLowerCase().includes(textoBusqueda) ||
+            p.categoria.descripcion.toLowerCase().includes(textoBusqueda) ||
+            String(p.idProducto).includes(textoBusqueda)
         );
-        renderProductos(productosFiltrados);
+        renderProductos(productosFiltrados, 1);
+    }
+
+    function renderProductos(lista = productosFiltrados, pagina = 1) {
+        paginaActual = pagina;
+        const inicio = (pagina - 1) * productosPorPagina;
+        const fin = inicio + productosPorPagina;
+        const productosPagina = lista.slice(inicio, fin);
+
+        tablaProductos.innerHTML = productosPagina.map(p => `
+            <tr>
+                <td>${p.idProducto}</td>
+                <td>${p.nombre}</td>
+                <td>${p.categoria.descripcion}</td>
+                <td>S/. ${p.precio.toFixed(2)}</td>
+                <td>${p.stock}</td>
+                <td>
+                    <button class="btn btn-sm bg-color-primary text-white" data-id="${p.idProducto}" ${p.stock === 0 ? 'disabled' : ''}>
+                        <i class="bi bi-plus-lg"></i> Agregar
+                    </button>
+                </td>
+            </tr>
+        `).join("");
+
+        renderPaginacion(lista.length, pagina);
+    }
+
+    function renderPaginacion(total, pagina) {
+        const totalPaginas = Math.ceil(total / productosPorPagina);
+        if (!paginacion || totalPaginas <= 1) {
+            paginacion.innerHTML = '';
+            return;
+        }
+
+        let botones = '';
+
+        // Botón anterior
+        botones += `
+        <li class="page-item ${pagina === 1 ? 'disabled' : ''}">
+            <a class="page-link" href="#" data-pagina="${pagina - 1}" aria-label="Anterior">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+    `;
+
+        // Botones numéricos
+        for (let i = 1; i <= totalPaginas; i++) {
+            botones += `
+            <li class="page-item ${i === pagina ? 'active' : ''}">
+                <a class="page-link" href="#" data-pagina="${i}">${i}</a>
+            </li>
+        `;
+        }
+
+        // Botón siguiente
+        botones += `
+        <li class="page-item ${pagina === totalPaginas ? 'disabled' : ''}">
+            <a class="page-link" href="#" data-pagina="${pagina + 1}" aria-label="Siguiente">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+    `;
+
+        paginacion.innerHTML = botones;
+    }
+
+
+    function renderSeleccionados() {
+        if (seleccionados.length === 0) {
+            contenedorSeleccionados.innerHTML = `<p class="text-center text-muted py-4">No hay productos seleccionados</p>`;
+        } else {
+            contenedorSeleccionados.innerHTML = `
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Producto</th>
+                            <th>Precio</th>
+                            <th>Cantidad</th>
+                            <th>Subtotal</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${seleccionados.map(item => `
+                            <tr>
+                                <td>${item.producto.nombre}</td>
+                                <td>S/. ${item.producto.precio.toFixed(2)}</td>
+                                <td>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <button class="btn btn-danger btn-disminuir" data-id="${item.producto.idProducto}" style="border-radius: .5rem !important;"><i class="bi bi-dash"></i></button>
+                                        <span class="px-2">${item.cantidad}</span>
+                                        <button class="btn btn-success btn-aumentar" data-id="${item.producto.idProducto}" style="border-radius: .5rem !important;"><i class="bi bi-plus"></i></button>
+                                    </div>
+                                </td>
+                                <td>S/. ${item.subTotal.toFixed(2)}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-danger btn-eliminar-seleccionado" data-id="${item.producto.idProducto}" title="Eliminar">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `).join("")}
+                    </tbody>
+                </table>
+                <div class="d-flex justify-content-end mt-3">
+                    <button class="btn btn-success" id="btnPasarAlCarrito">
+                        <i class="bi bi-cart-check"></i> Agregar a Venta
+                    </button>
+                </div>
+            `;
+        }
+        countSeleccionados.textContent = `${seleccionados.length} producto${seleccionados.length !== 1 ? 's' : ''}`;
+    }
+
+    function renderCarrito() {
+        if (carrito.length === 0) {
+            contenedorCarrito.innerHTML = `<p class="text-center text-muted py-4">El carrito está vacío</p>`;
+        } else {
+            const total = carrito.reduce((acc, d) => acc + d.subTotal, 0);
+            contenedorCarrito.innerHTML = `
+                <table class="table table-bordered align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Precio Unit.</th>
+                            <th>Subtotal</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${carrito.map(item => `
+                            <tr>
+                                <td>${item.producto.nombre}</td>
+                                <td>${item.cantidad}</td>
+                                <td>S/. ${item.producto.precio.toFixed(2)}</td>
+                                <td>S/. ${item.subTotal.toFixed(2)}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-danger btn-eliminar-carrito" data-id="${item.producto.idProducto}" title="Eliminar">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `).join("")}
+                    </tbody>
+                </table>
+                <h5 class="text-end fw-bold">Total: S/. ${total.toFixed(2)}</h5>
+                <div class="d-flex justify-content-end mt-3">
+                    <button class="btn btn-success" id="btnFinalizarVenta">
+                        <i class="bi bi-check-circle"></i> Finalizar Venta
+                    </button>
+                </div>
+            `;
+        }
+        countCarrito.textContent = `${carrito.length} producto${carrito.length !== 1 ? 's' : ''}`;
+    }
+
+    function agregarSeleccionado(id) {
+        const producto = productos.find(p => p.idProducto === id);
+        if (!producto) return;
+
+        if (producto.stock === 0) {
+            Swal.fire({
+                icon: 'info',
+                title: 'Sin stock',
+                text: 'Este producto no tiene stock disponible.'
+            });
+            return;
+        }
+
+        const existente = seleccionados.find(s => s.producto.idProducto === id);
+
+        if (existente) {
+            if (existente.cantidad < producto.stock) {
+                existente.cantidad++;
+                existente.subTotal = existente.cantidad * producto.precio;
+            } else {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Stock insuficiente',
+                    text: `Solo hay ${producto.stock} unidades disponibles.`
+                });
+            }
+        } else {
+            seleccionados.push({
+                producto,
+                cantidad: 1,
+                subTotal: producto.precio
+            });
+        }
+
+        renderSeleccionados();
+    }
+
+    function aumentarCantidad(id) {
+        const item = seleccionados.find(d => d.producto.idProducto === id);
+        if (!item) return;
+
+        if (item.cantidad < item.producto.stock) {
+            item.cantidad++;
+            item.subTotal = item.cantidad * item.producto.precio;
+        } else {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Stock insuficiente',
+                text: `No hay más stock disponible para este producto.`
+            });
+        }
+
+        renderSeleccionados();
+    }
+
+    function disminuirCantidad(id) {
+        const index = seleccionados.findIndex(d => d.producto.idProducto === id);
+        if (index === -1) return;
+
+        const item = seleccionados[index];
+        if (item.cantidad > 1) {
+            item.cantidad--;
+            item.subTotal = item.cantidad * item.producto.precio;
+        } else {
+            seleccionados.splice(index, 1);
+        }
+
+        renderSeleccionados();
+    }
+
+    function eliminarSeleccionado(id) {
+        seleccionados = seleccionados.filter(item => item.producto.idProducto !== id);
+        renderSeleccionados();
+    }
+
+    function eliminarDelCarrito(id) {
+        carrito = carrito.filter(item => item.producto.idProducto !== id);
+        renderCarrito();
     }
 
     function pasarAlCarrito() {
         if (seleccionados.length === 0) {
-            mostrarMensaje("No hay productos para agregar a la venta.", "warning");
+            Swal.fire('Aviso', 'No hay productos seleccionados para agregar a la venta.', 'warning');
             return;
         }
-        carrito.push(...seleccionados);
+
+        seleccionados.forEach(sel => {
+            const enCarrito = carrito.find(c => c.producto.idProducto === sel.producto.idProducto);
+            if (enCarrito) {
+                const cantidadTotal = enCarrito.cantidad + sel.cantidad;
+                if (cantidadTotal <= sel.producto.stock) {
+                    enCarrito.cantidad = cantidadTotal;
+                    enCarrito.subTotal = enCarrito.cantidad * enCarrito.producto.precio;
+                } else {
+                    Swal.fire('Stock insuficiente', `No hay suficiente stock para ${sel.producto.nombre}`, 'warning');
+                }
+            } else {
+                carrito.push({ ...sel });
+            }
+        });
+
         seleccionados = [];
         renderSeleccionados();
         renderCarrito();
@@ -78,20 +324,18 @@
 
     async function finalizarVenta() {
         if (carrito.length === 0) {
-            mostrarMensaje("El carrito está vacío. Agrega productos para finalizar la venta.", "danger");
+            Swal.fire('Carrito vacío', 'Agrega productos antes de realizar la venta.', 'error');
             return;
         }
 
-        console.log("El ID de usuario que se enviará es:", idUsuario);
-
         if (idUsuario === 0) {
-            mostrarMensaje("No se pudo obtener el ID de usuario. No se puede procesar la venta.", "danger");
+            Swal.fire('Error de usuario', 'No se puede procesar la venta sin un ID de usuario.', 'error');
             return;
         }
 
         const venta = {
             idVenta: 0,
-            idUsuario: idUsuario,
+            idUsuario,
             fecha: new Date().toISOString(),
             total: carrito.reduce((acc, d) => acc + d.subTotal, 0),
             tipoVenta: null,
@@ -112,198 +356,70 @@
 
             if (resp.ok) {
                 const result = await resp.json();
-                mostrarMensaje(`¡Venta #${result.idVenta} realizada con éxito!`, "success");
+
+                Swal.fire({
+                    icon: 'success',
+                    title: `Venta #${result.idVenta} realizada con éxito`,
+                    text: 'Gracias por su compra',
+                    timer: 4000,
+                    timerProgressBar: true,
+                    confirmButtonText: 'Aceptar'
+                });
+
                 carrito = [];
                 renderCarrito();
                 cargarProductos();
             } else {
                 const error = await resp.text();
-                mostrarMensaje(`Error al finalizar la venta: ${resp.statusText}. Detalles: ${error}`, "danger");
-                console.error("Error al finalizar la venta:", resp.status, error);
+                Swal.fire('Error en la venta', `${resp.statusText}: ${error}`, 'error');
             }
         } catch (err) {
             console.error("Error en la venta:", err);
-            mostrarMensaje("Ocurrió un error al procesar la venta. Inténtalo de nuevo.", "danger");
+            Swal.fire('Error inesperado', 'Ocurrió un error al procesar la venta. Inténtalo de nuevo.', 'error');
         }
     }
 
-    //Renderizar
-    function renderProductos(listaDeProductos = productos) {
-        tablaProductos.innerHTML = listaDeProductos.map(p => `
-            <tr>
-                <td>${p.idProducto}</td>
-                <td>${p.nombre}</td>
-                <td>${p.categoria.descripcion}</td>
-                <td>${p.precio.toFixed(2)}</td>
-                <td>${p.stock}</td>
-                <td>
-                    <button class="btn btn-sm btn-primary" data-id="${p.idProducto}">
-                        Agregar
-                    </button>
-                </td>
-            </tr>
-        `).join("");
-    }
+    // Delegación de eventos
+    document.addEventListener('click', e => {
+        const btn = e.target.closest('button');
+        if (!btn) return;
 
-    function renderSeleccionados() {
-        if (seleccionados.length === 0) {
-            contenedorSeleccionados.innerHTML = `<p class="text-center text-muted py-4">No hay productos seleccionados</p>`;
-        } else {
-            contenedorSeleccionados.innerHTML = `
-                <table class="table table-striped">
-                    <thead><tr><th>Nombre</th><th>Precio</th><th>Cantidad</th><th>Subtotal</th><th>Acción</th></tr></thead>
-                    <tbody>
-                        ${seleccionados.map(item => `
-                            <tr>
-                                <td>${item.producto.nombre}</td>
-                                <td>${item.producto.precio.toFixed(2)}</td>
-                                <td>
-                                    <button class="btn btn-sm btn-outline-secondary btn-disminuir" data-id="${item.producto.idProducto}">-</button>
-                                    ${item.cantidad}
-                                    <button class="btn btn-sm btn-outline-secondary btn-aumentar" data-id="${item.producto.idProducto}">+</button>
-                                </td>
-                                <td>${item.subTotal.toFixed(2)}</td>
-                                <td><button class="btn btn-sm btn-danger btn-eliminar-seleccionado" data-id="${item.producto.idProducto}">
-                                    <i class="bi bi-trash"></i>
-                                </button></td>
-                            </tr>
-                        `).join("")}
-                    </tbody>
-                </table>
-                <div class="d-flex justify-content-end">
-                    <button class="btn btn-success" id="btnPasarAlCarrito">Agregar a Venta</button>
-                </div>
-            `;
-        }
-        countSeleccionados.textContent = `${seleccionados.length} productos`;
-    }
+        const id = btn.dataset.id ? parseInt(btn.dataset.id, 10) : null;
 
-    function renderCarrito() {
-        if (carrito.length === 0) {
-            contenedorCarrito.innerHTML = `<p class="text-center text-muted py-4">El carrito está vacío</p>`;
-        } else {
-            const total = carrito.reduce((acc, d) => acc + d.subTotal, 0);
-            contenedorCarrito.innerHTML = `
-                <table class="table table-bordered">
-                    <thead><tr><th>Producto</th><th>Cant.</th><th>Precio</th><th>Subtotal</th><th>Acción</th></tr></thead>
-                    <tbody>
-                        ${carrito.map(item => `
-                            <tr>
-                                <td>${item.producto.nombre}</td>
-                                <td>${item.cantidad}</td>
-                                <td>${item.producto.precio}</td>
-                                <td>${item.subTotal.toFixed(2)}</td>
-                                <td><button class="btn btn-sm btn-danger btn-eliminar-carrito" data-id="${item.producto.idProducto}">
-                                    <i class="bi bi-trash"></i>
-                                </button></td>
-                            </tr>
-                        `).join("")}
-                    </tbody>
-                </table>
-                <h4 class="text-end">Total: ${total.toFixed(2)}</h4>
-                <div class="d-flex justify-content-end">
-                    <button class="btn btn-success" id="btnFinalizarVenta">Finalizar Venta</button>
-                </div>
-            `;
-        }
-        countCarrito.textContent = `${carrito.length} productos`;
-    }
-
-    //Agregar, disminuir y eliminar de prodSeleccionados/carrito
-    function agregarSeleccionado(id) {
-        const producto = productos.find(p => p.idProducto === id);
-        const existente = seleccionados.find(d => d.producto.idProducto === id);
-
-        if (producto.stock === 0) {
-            mostrarMensaje("El producto no tiene stock disponible.", "info");
-            return;
-        }
-
-        if (existente) {
-            if (existente.cantidad < producto.stock) {
-                existente.cantidad++;
-                existente.subTotal = existente.cantidad * producto.precio;
-            } else {
-                mostrarMensaje("No hay suficiente stock disponible.", "warning");
-            }
-        } else {
-            seleccionados.push({
-                producto,
-                cantidad: 1,
-                subTotal: producto.precio
-            });
-        }
-        renderSeleccionados();
-    }
-
-    function aumentarCantidad(id) {
-        const item = seleccionados.find(d => d.producto.idProducto === id);
-        if (item.cantidad < item.producto.stock) {
-            item.cantidad++;
-            item.subTotal = item.cantidad * item.producto.precio;
-            renderSeleccionados();
-        } else {
-            mostrarMensaje("Stock insuficiente para este producto.", "warning");
-        }
-    }
-
-    function disminuirCantidad(id) {
-        let itemIndex = seleccionados.findIndex(d => d.producto.idProducto === id);
-        if (itemIndex > -1) {
-            let item = seleccionados[itemIndex];
-            if (item.cantidad > 1) {
-                item.cantidad--;
-                item.subTotal = item.cantidad * item.producto.precio;
-            } else {
-                seleccionados.splice(itemIndex, 1);
-            }
-        }
-        renderSeleccionados();
-    }
-
-    function eliminarSeleccionado(id) {
-        seleccionados = seleccionados.filter(item => item.producto.idProducto !== id);
-        renderSeleccionados();
-    }
-
-    function eliminarDelCarrito(id) {
-        carrito = carrito.filter(item => item.producto.idProducto !== id);
-        renderCarrito();
-    }
-
-    // Eventos de escucha
-    document.addEventListener('click', (e) => {
-        if (e.target.closest('button')) {
-            const button = e.target.closest('button');
-            const id = parseInt(button.dataset.id, 10);
-
-            if (button.textContent.trim() === 'Agregar' || button.parentElement.textContent.trim() === 'Agregar') {
-                agregarSeleccionado(id);
-            } else if (button.classList.contains('btn-disminuir')) {
-                disminuirCantidad(id);
-            } else if (button.classList.contains('btn-aumentar')) {
-                aumentarCantidad(id);
-            } else if (button.classList.contains('btn-eliminar-seleccionado')) {
-                eliminarSeleccionado(id);
-            } else if (button.classList.contains('btn-eliminar-carrito')) {
-                eliminarDelCarrito(id);
-            }
+        if (btn.classList.contains('btn-disminuir')) {
+            disminuirCantidad(id);
+        } else if (btn.classList.contains('btn-aumentar')) {
+            aumentarCantidad(id);
+        } else if (btn.classList.contains('btn-eliminar-seleccionado')) {
+            eliminarSeleccionado(id);
+        } else if (btn.classList.contains('btn-eliminar-carrito')) {
+            eliminarDelCarrito(id);
+        } else if (btn.textContent.trim().includes('Agregar') || btn.querySelector('i.bi-plus-lg')) {
+            agregarSeleccionado(id);
         }
     });
 
-    document.addEventListener('click', (e) => {
-        if (e.target.id === 'btnPasarAlCarrito') {
+    document.addEventListener("click", e => {
+        if (e.target.id === "btnPasarAlCarrito") {
             pasarAlCarrito();
         }
-        if (e.target.id === 'btnFinalizarVenta') {
+        if (e.target.id === "btnFinalizarVenta") {
             finalizarVenta();
         }
     });
 
-    // Evento de escucha para el campo de búsqueda
     inputBusqueda.addEventListener("input", filtrarProductos);
 
-    // Carga inicial de productos y renderizado
+    document.addEventListener("click", e => {
+        const link = e.target.closest("a[data-pagina]");
+        if (link) {
+            e.preventDefault();
+            const nuevaPagina = parseInt(link.dataset.pagina);
+            renderProductos(productosFiltrados, nuevaPagina);
+        }
+    });
+
+    // Inicializar
     cargarProductos().then(() => {
         renderSeleccionados();
         renderCarrito();

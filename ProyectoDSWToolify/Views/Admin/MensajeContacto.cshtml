@@ -1,0 +1,115 @@
+﻿@model IEnumerable<ProyectoDSWToolify.Models.ViewModels.ContactoMensaje>
+
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Mensajes de Contacto";
+}
+
+<h2 class="mb-4"><i class="fa fa-envelope-open-text me-2"></i>Mensajes de Contacto</h2>
+
+<div class="row row-cols-1 row-cols-md-2 g-3">
+    @foreach (var item in Model)
+    {
+        <div class="col">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title mb-1">
+                        <i class="fa fa-user-circle me-1"></i> @item.nombre
+                    </h5>
+                    <p class="card-text mb-1">
+                        <i class="fa fa-envelope me-1"></i> @item.email
+                    </p>
+                    <p class="card-text mb-1">
+                        <i class="fa fa-phone me-1"></i> @item.telefono
+                    </p>
+                    <p class="card-text text-muted small">
+                        <i class="fa fa-calendar-alt me-1"></i> @item.fechaEnvio.ToString("dd MMM yyyy HH:mm")
+                    </p>
+
+                    <div class="d-flex justify-content-end mt-3">
+                        <button class="btn btn-sm btn-outline-primary-custom-v2 me-2" data-bs-toggle="modal" data-bs-target="#verMensajeModal" data-nombre="@item.nombre" data-mensaje="@item.mensaje">
+                            <i class="fa fa-eye me-1"></i> Ver
+                        </button>
+                        <form method="post" class="delete-form" data-id="@item.id">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                <i class="fa fa-trash-alt me-1"></i> Eliminar
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Modal Ver Mensaje -->
+<div class="modal fade" id="verMensajeModal" tabindex="-1" aria-labelledby="verMensajeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+        <div class="modal-content shadow-lg border-0">
+            <div class="modal-header bg-color-primary text-white">
+                <h5 class="modal-title">
+                    <i class="fa fa-envelope-open-text me-2"></i> Detalle del Mensaje
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <h6 class="fw-bold"><i class="fa fa-user me-2"></i> <span id="modalNombre"></span></h6>
+                </div>
+                <div class="border-start border-4 ps-3 mb-3" style="border-color: #0d6efd;">
+                    <p class="mb-0" id="modalMensaje" style="white-space: pre-wrap;"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+        const modal = document.getElementById('verMensajeModal');
+        modal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const nombre = button.getAttribute('data-nombre');
+            const mensaje = button.getAttribute('data-mensaje');
+
+            document.getElementById('modalNombre').textContent = nombre;
+            document.getElementById('modalMensaje').textContent = mensaje;
+        });
+        // Confirmar eliminación con SweetAlert2
+        document.querySelectorAll('.delete-form').forEach(form => {
+            form.addEventListener('submit', function (e) {
+                e.preventDefault(); // Prevenir submit por ahora
+
+                const id = this.getAttribute('data-id');
+
+                Swal.fire({
+                    title: '¿Estás seguro?',
+                    text: "Esta acción no se puede deshacer.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Sí, eliminar',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Crear form dinámico y enviarlo
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = `/Admin/EliminarMensaje`;
+
+                        const input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = 'id';
+                        input.value = id;
+
+                        form.appendChild(input);
+                        document.body.appendChild(form);
+                        form.submit();
+                    }
+                });
+            });
+        });
+    </script>
+}
