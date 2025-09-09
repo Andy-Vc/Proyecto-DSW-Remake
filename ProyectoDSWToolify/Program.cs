@@ -46,7 +46,7 @@ builder.Services.AddHttpClient<IVendedorService, VendedorService>(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["Services:URL_API"]);
 });
-builder.Services.AddHttpClient<IReporteService, ReporteService>(client =>
+builder.Services.AddHttpClient<IEstadisticaService, EstadisticaService>(client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["Services:URL_API"]);
 });

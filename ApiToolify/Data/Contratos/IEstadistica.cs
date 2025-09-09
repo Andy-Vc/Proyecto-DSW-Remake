@@ -2,12 +2,11 @@
 {
     public interface IEstadistica
     {
-        long ContarVentasPorMes(string fechaMes);
-        long ContarProductosVendidosPorMes(string fechaMes);
-        long ContarClientesAtendidosPorMes(string fechaMes);
-        long ObtenerTotalVentas();
-        long ObtenerTotalProductosVendidos();
-        double ObtenerIngresosTotales();
+        long ContarVentasPorMes(int id,string fechaMes);
+        long ContarProductosVendidosPorMes(int id,string fechaMes);
+        long ObtenerTotalVentas(int id);
+        long ObtenerTotalProductosVendidos(int id);
+        double ObtenerIngresosTotales(int id);
 
     }
 }

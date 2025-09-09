@@ -8,7 +8,6 @@
 
         public long VentasMensuales { get; set; }
         public long ProductosMensuales { get; set; }
-        public long ClientesMensuales { get; set; }
         public double IngresosMensuales { get; set; }
 
         public string FechaCompleta { get; set; }

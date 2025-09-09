@@ -17,44 +17,37 @@ namespace ApiToolify.Controllers
 
         [HttpGet]
         [Route("mensual/ventas/{fechaMes}")]
-        public IActionResult contarVentasMesActual(string fechaMes)
+        public IActionResult contarVentasMesActual(int id, string fechaMes)
         {
-            return Ok(reporteData.ContarVentasPorMes(fechaMes));
+            return Ok(reporteData.ContarVentasPorMes(id,fechaMes));
         }
 
         [HttpGet]
         [Route("mensual/productos/{fechaMes}")]
-        public IActionResult contarProductosVendidosMesActual(string fechaMes)
+        public IActionResult contarProductosVendidosMesActual(int id, string fechaMes)
         {
-            return Ok(reporteData.ContarProductosVendidosPorMes(fechaMes));
-        }
-
-        [HttpGet]
-        [Route("mensual/clientes/{fechaMes}")]
-        public IActionResult contarClientesAtendidosMesActual(string fechaMes)
-        {
-            return Ok(reporteData.ContarClientesAtendidosPorMes(fechaMes));
+            return Ok(reporteData.ContarProductosVendidosPorMes(id,fechaMes));
         }
 
         [HttpGet]
         [Route("total/ventas")]
-        public IActionResult obtenerTotalVentas()
+        public IActionResult obtenerTotalVentas(int id)
         {
-            return Ok(reporteData.ObtenerTotalVentas());
+            return Ok(reporteData.ObtenerTotalVentas(id));
         }
 
         [HttpGet]
         [Route("total/productos")]
-        public IActionResult obtenerTotalProductosVendidos()
+        public IActionResult obtenerTotalProductosVendidos(int id)
         {
-            return Ok(reporteData.ObtenerTotalProductosVendidos());
+            return Ok(reporteData.ObtenerTotalProductosVendidos(id));
         }
 
         [HttpGet]
         [Route("total/ingresos")]
-        public IActionResult obtenerIngresosTotales()
+        public IActionResult obtenerIngresosTotales(int id)
         {
-            return Ok(reporteData.ObtenerIngresosTotales());
+            return Ok(reporteData.ObtenerIngresosTotales(id));
         }
     }
 }

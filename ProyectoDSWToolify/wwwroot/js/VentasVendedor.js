@@ -184,7 +184,7 @@
                         <tr>
                             <th>Producto</th>
                             <th>Cantidad</th>
-                            <th>Precio Unit.</th>
+                            <th>Precio</th>
                             <th>Subtotal</th>
                             <th>Acción</th>
                         </tr>

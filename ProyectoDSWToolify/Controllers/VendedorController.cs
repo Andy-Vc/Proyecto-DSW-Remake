@@ -14,9 +14,9 @@ namespace ProyectoDSWToolify.Controllers
     {
         private readonly IVendedorService _vendedorService;
         private readonly IVentaService _ventaService;
-        private readonly IReporteService _reporteService;
+        private readonly IEstadisticaService _reporteService;
 
-        public VendedorController(IVendedorService vendedorService, IVentaService ventaService, IReporteService reporteService)
+        public VendedorController(IVendedorService vendedorService, IVentaService ventaService, IEstadisticaService reporteService)
         {
             _vendedorService = vendedorService;
             _ventaService = ventaService;
@@ -35,6 +35,23 @@ namespace ProyectoDSWToolify.Controllers
             {
                 return NotFound(ex.Message);
             }
+        }
+        [HttpGet]
+        public async Task<IActionResult> DatosTotales()
+        {
+            var usuarioJson = HttpContext.Session.GetString("usuario");
+
+            var usuario = System.Text.Json.JsonSerializer.Deserialize<Usuario>(usuarioJson);
+            int idUsuario = usuario.idUsuario;
+
+            var metricas = new
+            {
+                totalProductosVendidos = await _reporteService.ObtenerTotalProductosVendidosAsync(idUsuario),
+                totalVentas = await _reporteService.ObtenerTotalVentasAsync(idUsuario),
+                ingresosTotales = await _reporteService.ObtenerIngresosTotalesAsync(idUsuario)
+            };
+
+            return Json(metricas);
         }
 
         public async Task<IActionResult> DetalleVenta(int idVenta)
@@ -93,10 +110,9 @@ namespace ProyectoDSWToolify.Controllers
                 Nombre = usuario.nombre,
                 Correo = usuario.correo,
                 InicialNombre = usuario.nombre.Substring(0, 1).ToUpper(),
-                VentasMensuales = await _reporteService.ContarVentasPorMesAsync(fechaActual),
-                ProductosMensuales = await _reporteService.ContarProductosVendidosPorMesAsync(fechaActual),
-                ClientesMensuales = await _reporteService.ContarClientesAtendidosPorMesAsync(fechaActual),
-                IngresosMensuales = await _reporteService.ObtenerIngresosTotalesAsync(),
+                VentasMensuales = await _reporteService.ContarVentasPorMesAsync(usuario.idUsuario,fechaActual),
+                ProductosMensuales = await _reporteService.ContarProductosVendidosPorMesAsync(usuario.idUsuario,fechaActual),
+                IngresosMensuales = await _reporteService.ObtenerIngresosTotalesAsync(usuario.idUsuario),
 
                 FechaCompleta = DateTime.Now.ToString("dddd, dd MMMM yyyy", new System.Globalization.CultureInfo("es-ES")),
                 FechaCorta = DateTime.Now.ToString("dd/MM/yyyy")

@@ -12,7 +12,6 @@ begin
 end
 go
 
-
 create or alter proc sp_Distrito
 @tipo varchar(50),
 @id int
@@ -24,7 +23,6 @@ begin
 	end
 end
 go
-
 
 create or alter proc crudProveedores
 @tipo varchar(50),
@@ -171,10 +169,6 @@ BEGIN
 END
 GO
 
-exec obtenerCompraPorIdCliente 9
-go
-
-
 CREATE OR ALTER PROC obtenerCompraPorIdVenta
     @ID_VENTA INT,
     @ID_USUARIO INT
@@ -206,9 +200,6 @@ BEGIN
     WHERE V.ID_VENTA = @ID_VENTA AND V.ID_USUARIO = @ID_USUARIO
 END
 GO
-
-exec obtenerCompraPorIdVenta 5, 9
-go
 
 -- SCRIPTS PRODUCTOS
 create or alter proc listarProductos
@@ -272,9 +263,6 @@ begin
 end
 go
 
-exec crudProductos 'detalle',54
-GO
-
 CREATE OR ALTER PROC iniciarSession
 	@CORREO VARCHAR(50),
     @CLAVE VARCHAR(225)
@@ -307,7 +295,6 @@ END
 GO
 
 -- INICIO PROCS DE VENDEDOR --
-
 CREATE OR ALTER PROC usp_listarProductosVendedor
 AS
 BEGIN
@@ -344,9 +331,6 @@ BEGIN
     ORDER BY V.FECHA DESC;
 END
 GO
-
-exec usp_obtenerHistorialVentas 9
-go
 
 CREATE OR ALTER PROC usp_obtenerListadoPedidos
 AS
@@ -400,9 +384,6 @@ BEGIN
 END
 GO
 
-EXEC usp_obtenerVentaPorId 4
-go
-
 CREATE OR ALTER PROC usp_editarEstadoVenta
 @ID_VENTA INT,
 @ESTADO CHAR(1)
@@ -413,56 +394,46 @@ AS
 GO
 
 CREATE OR ALTER PROC usp_contarVentasPorMes
-@FechaMes CHAR(7)
+@FechaMes CHAR(7),
+@IdUsuario int
 AS
 BEGIN
     SELECT 
         COUNT(v.ID_VENTA)
     FROM TB_VENTA AS v
-    WHERE FORMAT(V.FECHA, 'yyyy-MM') = @FechaMes
+    WHERE FORMAT(V.FECHA, 'yyyy-MM') = @FechaMes AND v.ID_USUARIO = @IdUsuario
 END
 GO
 
-exec usp_contarVentasPorMes '2025-08'
-go
-
 CREATE OR ALTER PROC usp_contarProductosVendidosPorMes
-@FechaMes CHAR(7)
+@FechaMes CHAR(7),
+@IdUsuario int
 AS
 	SELECT COALESCE(SUM(d.CANTIDAD), 0) FROM TB_VENTA AS v
     INNER JOIN TB_DETALLE_VENTA AS d ON v.ID_VENTA = d.ID_VENTA
-    WHERE CONVERT(CHAR(7), v.FECHA, 120) = @FechaMes
+	WHERE CONVERT(CHAR(7), v.FECHA, 120) = @FechaMes AND v.ID_USUARIO = @IdUsuario
 GO
-
-exec usp_contarProductosVendidosPorMes '2025-08'
-go
-
-CREATE OR ALTER PROC usp_contarClientesAtendidosPorMes
-@FechaMes CHAR(7)
-AS
-	SELECT COUNT(DISTINCT v.ID_USUARIO) FROM TB_VENTA AS v
-	INNER JOIN TB_USUARIO AS u ON v.ID_USUARIO = u.ID_USUARIO
-	INNER JOIN TB_ROL AS r ON u.ROL = r.ID_ROL
-	WHERE CONVERT(CHAR(7), v.FECHA, 120) = @FechaMes and r.ID_ROL = 3
-GO
-
-exec usp_contarProductosVendidosPorMes '2025-08'
-go
 
 CREATE OR ALTER PROC usp_obtenerTotalVentas
+	@IdUsuario int
 AS
 	SELECT COUNT(*) FROM TB_VENTA
+	WHERE ID_USUARIO = @IdUsuario
 GO
 
 CREATE OR ALTER PROC usp_obtenerTotalProductosVendidos
+	@IdUsuario int
 AS
 	SELECT COALESCE(SUM(d.CANTIDAD), 0) FROM TB_VENTA AS v
     INNER JOIN TB_DETALLE_VENTA AS d ON v.ID_VENTA = d.ID_VENTA
+	WHERE v.ID_USUARIO = @IdUsuario
 GO
 
 CREATE OR ALTER PROC usp_obtenerIngresosTotales
+	@IdUsuario int
 AS
     SELECT COALESCE(SUM(TOTAL), 0) FROM TB_VENTA
+	WHERE ID_USUARIO = @IdUsuario
 GO
 
 CREATE OR ALTER PROC usp_agregarVenta
@@ -510,8 +481,6 @@ BEGIN
     END
 END
 GO
-
--- FIN PROCS DE VENDEDOR --
 
 -- SCRPITS GRAFICOS --
 CREATE OR ALTER PROC GraficosDatosProcedure
@@ -577,11 +546,6 @@ begin
 end
 go
 
-
-select * from TB_USUARIO
-exec GraficosDatosProcedure 'ventaPorMesAndTipoVenta'
-go
-
 create or alter proc ListadoVentaFechaAndTipoVenta
 @fechaInicio datetime = null,
 @fechaFin datetime = null,
@@ -599,11 +563,6 @@ begin
 end
 go
 
-EXEC ListadoVentaFechaAndTipoVenta 
-SELECT * FROM TB_VENTA where ID_VENTA = 41
-go
-
-
 CREATE OR ALTER PROC ListarProductosPorCategoria
     @idCategoria INT = null,
     @orden VARCHAR(4) = 'ASC'
@@ -619,10 +578,6 @@ BEGIN
         CASE WHEN @orden = 'DESC' THEN p.STOCK END DESC;
 END
 GO
-
-exec ListarProductosPorCategoria 
-go
-
 
 /**Repartidor**/
 CREATE OR ALTER PROC listarVentasRemotasPendientes

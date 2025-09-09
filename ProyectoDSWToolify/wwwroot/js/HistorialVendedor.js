@@ -11,7 +11,7 @@ fetch("/Vendedor/DatosTotales", { cache: "no-store" })
     .then(data => {
         document.getElementById("totalVentas").textContent = data.totalVentas;
         document.getElementById("totalProductos").textContent = data.totalProductosVendidos;
-        document.getElementById("ingresosTotales").textContent = `S/ ${data.ingresosTotales.toFixed(2)}`;
+        document.getElementById("ingresosTotales").textContent = `S/ ${formatearMiles(data.ingresosTotales)}`;
     })
     .catch(err => console.error("Error al cargar datos totales:", err));
 
@@ -49,29 +49,30 @@ botonesDetalle.forEach(boton => {
                                 "bg-secondary";
 
                 const htmlContent = `
-                        <p><strong>Vendedor:</strong> ${data.usuario.nombre}</p>
-                        <p><strong>Documento:</strong> ${data.usuario.nroDoc}</p>
-                        <p><strong>Fecha:</strong> ${new Date(data.fecha).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
-                        <p><strong>Total:</strong> S/. ${data.total.toFixed(2)}</p>
-                        <p>
-                            <strong>Estado:</strong>
-                            <span class="badge ${estadoClase} text-white">${estadoTexto}</span>
-                        </p>
-                        <hr>
-                        <h6>Productos</h6>
-                        <table class="table table-sm table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Producto</th>
-                                    <th>Cantidad</th>
-                                    <th>Subtotal</th>
-                                </tr>
-                            </thead>
-                            <tbody id="detalles-productos">
-                                <!-- Los detalles de los productos se insertarán aquí dinámicamente -->
-                            </tbody>
-                        </table>
-                    `;
+	<div class="mb-3">
+		<p><i class="fas fa-id-card me-2 text-primary-custom"></i><strong>Documento:</strong> ${data.usuario.nroDoc}</p>
+		<p><i class="fas fa-calendar-alt me-2 text-primary-custom"></i><strong>Fecha:</strong> ${new Date(data.fecha).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
+		<p><i class="fas fa-money-bill-wave me-2 text-primary-custom"></i><strong>Total:</strong> S/. ${formatearMiles(data.total)}</p>
+		<p><i class="fas fa-info-circle me-2 text-primary-custom"></i><strong>Estado:</strong>
+			<span class="badge ${estadoClase} text-white">${estadoTexto}</span>
+		</p>
+	</div>
+	<hr>
+	<h6 class="fw-bold text-dark mb-3">
+		<i class="fas fa-box-open me-2 text-success"></i> Productos
+	</h6>
+	<table class="table table-bordered table-striped table-hover table-sm align-middle">
+		<thead class="table-light">
+			<tr>
+				<th>Producto</th>
+				<th>Cantidad</th>
+				<th>Subtotal</th>
+			</tr>
+		</thead>
+		<tbody id="detalles-productos"></tbody>
+	</table>
+`;
+
 
                 modalBody.innerHTML = htmlContent;
 
@@ -83,7 +84,7 @@ botonesDetalle.forEach(boton => {
                         row.innerHTML = `
                                 <td>${det.producto.nombre}</td>
                                 <td>${det.cantidad}</td>
-                                <td>S/. ${det.subTotal.toFixed(2)}</td>
+                                <td>S/. ${formatearMiles(det.subTotal)}</td>
                             `;
                         tbody.appendChild(row);
                     });
@@ -102,3 +103,8 @@ botonesDetalle.forEach(boton => {
     });
 });
 
+function formatearMiles(numero) {
+    return numero
+        .toFixed(2)
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
